@@ -1,0 +1,219 @@
+2026-01-16 17:03:27,060 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.7:5000
+2026-01-16 17:03:27,061 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-01-16 17:03:27,063 - werkzeug - INFO -  * Restarting with stat
+2026-01-16 17:03:29,131 - werkzeug - WARNING -  * Debugger is active!
+2026-01-16 17:03:29,134 - werkzeug - INFO -  * Debugger PIN: 594-395-059
+2026-01-16 17:25:35,362 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:25:35] "POST /api/encode_face HTTP/1.1" 200 -
+2026-01-16 17:30:11,394 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:30:11,395 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:30:11] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:30:15,041 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:30:15,042 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:30:15] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:30:21,582 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:30:21,583 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:30:21] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:30:22,534 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:30:22,534 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:30:22] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:30:49,886 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:30:49,886 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:30:49] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:31:13,116 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:31:13,117 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:31:13] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:31:40,601 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:31:40] "POST /api/encode_face HTTP/1.1" 200 -
+2026-01-16 17:31:40,605 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:31:40] "OPTIONS /api/face/compare HTTP/1.1" 200 -
+2026-01-16 17:31:40,913 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:31:40] "POST /api/face/compare HTTP/1.1" 200 -
+2026-01-16 17:31:58,223 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:31:58] "POST /api/encode_face HTTP/1.1" 200 -
+2026-01-16 17:31:58,540 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:31:58] "OPTIONS /api/face/compare HTTP/1.1" 200 -
+2026-01-16 17:31:58,803 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:31:58] "POST /api/face/compare HTTP/1.1" 200 -
+2026-01-16 17:32:13,992 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:32:13] "POST /api/encode_face HTTP/1.1" 200 -
+2026-01-16 17:32:14,307 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:32:14] "OPTIONS /api/face/compare HTTP/1.1" 200 -
+2026-01-16 17:32:14,571 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:32:14] "POST /api/face/compare HTTP/1.1" 200 -
+2026-01-16 17:32:48,686 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:32:48] "POST /api/encode_face HTTP/1.1" 200 -
+2026-01-16 17:32:49,006 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:32:49] "OPTIONS /api/face/compare HTTP/1.1" 200 -
+2026-01-16 17:32:49,253 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:32:49] "POST /api/face/compare HTTP/1.1" 200 -
+2026-01-16 17:33:01,283 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:01] "POST /api/encode_face HTTP/1.1" 200 -
+2026-01-16 17:33:01,593 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:01] "OPTIONS /api/face/compare HTTP/1.1" 200 -
+2026-01-16 17:33:01,859 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:01] "POST /api/face/compare HTTP/1.1" 200 -
+2026-01-16 17:33:04,448 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:04,449 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:04] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:11,063 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:11] "POST /api/encode_face HTTP/1.1" 200 -
+2026-01-16 17:33:11,067 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:11] "OPTIONS /api/face/compare HTTP/1.1" 200 -
+2026-01-16 17:33:11,384 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:11] "POST /api/face/compare HTTP/1.1" 200 -
+2026-01-16 17:33:18,487 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:18,487 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:18] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:19,297 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:19,297 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:19] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:19,327 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:19,328 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:19] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:19,363 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:19,364 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:19] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:19,401 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:19,402 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:19] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:19,422 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:19,423 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:19] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:19,467 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:19,467 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:19] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:19,607 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:19,607 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:19] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:19,637 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:19,638 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:19] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:19,668 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:19,669 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:19] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:19,715 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:19,716 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:19] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:19,730 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:19,731 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:19] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:19,777 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:19,778 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:19] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:19,915 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:19,916 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:19] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:19,946 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:19,946 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:19] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:19,978 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:19,978 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:19] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:20,021 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:20,021 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:20] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:20,038 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:20,038 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:20] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:20,084 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:20,085 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:20] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:20,222 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:20,222 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:20] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:20,252 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:20,252 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:20] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:20,284 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:20,285 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:20] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:20,331 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:20,332 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:20] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:20,346 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:20,346 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:20] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:20,393 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:20,394 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:20] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:20,532 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:20,533 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:20] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:20,564 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:20,565 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:20] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:20,595 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:20,596 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:20] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:20,643 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:20,644 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:20] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:20,658 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:20,660 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:20] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:20,698 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:20,698 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:20] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:20,841 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:20,842 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:20] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:20,876 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:20,877 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:20] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:20,907 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:20,907 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:20] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:20,948 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:20,949 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:20] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:20,970 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:20,970 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:20] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:21,010 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:21,011 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:21] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:21,156 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:21,156 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:21] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:21,187 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:21,188 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:21] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:21,213 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:21,214 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:21] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:23,690 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:23,691 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:23] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:24,508 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:24,508 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:24] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:24,539 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:24,540 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:24] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:24,570 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:24,570 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:24] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:33:24,601 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:33:24,603 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:33:24] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:34:42,680 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:34:42] "POST /api/encode_face HTTP/1.1" 200 -
+2026-01-16 17:34:42,686 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:34:42] "OPTIONS /api/face/compare HTTP/1.1" 200 -
+2026-01-16 17:34:43,005 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:34:43] "POST /api/face/compare HTTP/1.1" 200 -
+2026-01-16 17:38:55,136 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:38:55] "POST /api/encode_face HTTP/1.1" 200 -
+2026-01-16 17:41:26,067 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:41:26] "POST /api/encode_face HTTP/1.1" 200 -
+2026-01-16 17:41:26,073 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:41:26] "OPTIONS /api/face/compare HTTP/1.1" 200 -
+2026-01-16 17:41:26,384 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:41:26] "POST /api/face/compare HTTP/1.1" 200 -
+2026-01-16 17:41:36,482 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:41:36] "POST /api/encode_face HTTP/1.1" 200 -
+2026-01-16 17:41:36,805 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:41:36] "OPTIONS /api/face/compare HTTP/1.1" 200 -
+2026-01-16 17:41:37,047 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:41:37] "POST /api/face/compare HTTP/1.1" 200 -
+2026-01-16 17:42:28,335 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:42:28] "POST /api/encode_face HTTP/1.1" 200 -
+2026-01-16 17:42:28,654 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:42:28] "OPTIONS /api/face/compare HTTP/1.1" 200 -
+2026-01-16 17:42:28,918 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:42:28] "POST /api/face/compare HTTP/1.1" 200 -
+2026-01-16 17:43:26,989 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:43:26] "POST /api/encode_face HTTP/1.1" 200 -
+2026-01-16 17:43:27,298 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:43:27] "OPTIONS /api/face/compare HTTP/1.1" 200 -
+2026-01-16 17:43:27,562 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:43:27] "POST /api/face/compare HTTP/1.1" 200 -
+2026-01-16 17:46:14,865 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:46:14] "POST /api/encode_face HTTP/1.1" 200 -
+2026-01-16 17:46:42,904 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:46:42] "OPTIONS /api/fingerprint/init HTTP/1.1" 200 -
+2026-01-16 17:46:43,212 - FingerprintController - INFO - Initializing fingerprint controller on COM16
+2026-01-16 17:46:43,356 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:46:43] "[35m[1mPOST /api/fingerprint/init HTTP/1.1[0m" 500 -
+2026-01-16 17:46:50,434 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:46:50] "OPTIONS /api/fingerprint/init HTTP/1.1" 200 -
+2026-01-16 17:46:50,742 - FingerprintController - INFO - Initializing fingerprint controller on COM16
+2026-01-16 17:46:50,748 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:46:50] "[35m[1mPOST /api/fingerprint/init HTTP/1.1[0m" 500 -
+2026-01-16 17:46:54,837 - FingerprintController - INFO - Initializing fingerprint controller on COM16
+2026-01-16 17:46:54,843 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:46:54] "[35m[1mPOST /api/fingerprint/init HTTP/1.1[0m" 500 -
+2026-01-16 17:55:03,763 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:55:03] "POST /api/encode_face HTTP/1.1" 200 -
+2026-01-16 17:55:09,524 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:55:09] "OPTIONS /api/fingerprint/init HTTP/1.1" 200 -
+2026-01-16 17:55:09,833 - FingerprintController - INFO - Initializing fingerprint controller on COM11
+2026-01-16 17:55:13,590 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:55:13] "[35m[1mPOST /api/fingerprint/init HTTP/1.1[0m" 500 -
+2026-01-16 17:55:22,158 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:55:22] "OPTIONS /api/fingerprint/init HTTP/1.1" 200 -
+2026-01-16 17:55:22,462 - FingerprintController - INFO - Initializing fingerprint controller on COM11
+2026-01-16 17:55:25,230 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:55:25] "POST /api/fingerprint/init HTTP/1.1" 200 -
+2026-01-16 17:55:25,234 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:55:25] "OPTIONS /api/fingerprint/register HTTP/1.1" 200 -
+2026-01-16 17:55:25,551 - FingerprintController - INFO - Registering new fingerprint with ID: 3 for voter: velu
+2026-01-16 17:55:25,551 - FingerprintController - WARNING - Registration file registration.json not found
+2026-01-16 17:55:25,622 - FingerprintController - INFO - [info] Place finger on sensor
+2026-01-16 17:55:25,799 - FingerprintController - INFO - [info] Image taken successfully
+2026-01-16 17:55:26,125 - FingerprintController - INFO - [info] Remove finger
+2026-01-16 17:55:28,135 - FingerprintController - INFO - [info] Place same finger again
+2026-01-16 17:55:29,526 - FingerprintController - INFO - [success] Registered fingerprint
+2026-01-16 17:55:29,527 - FingerprintController - INFO - Successfully stored fingerprint data for ID 3 in registration.json
+2026-01-16 17:55:29,528 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:55:29] "POST /api/fingerprint/register HTTP/1.1" 200 -
+2026-01-16 17:59:03,180 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:59:03] "POST /api/encode_face HTTP/1.1" 200 -
+2026-01-16 17:59:03,185 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:59:03] "OPTIONS /api/face/compare HTTP/1.1" 200 -
+2026-01-16 17:59:03,490 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:59:03] "POST /api/face/compare HTTP/1.1" 200 -
+2026-01-16 17:59:06,093 - FaceEncodingAPI - ERROR - Error processing image: Could not decode image
+2026-01-16 17:59:06,093 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:59:06] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-16 17:59:16,787 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:59:16] "OPTIONS /api/fingerprint/init HTTP/1.1" 200 -
+2026-01-16 17:59:17,049 - FingerprintController - INFO - Initializing fingerprint controller on COM16
+2026-01-16 17:59:17,059 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:59:17] "[35m[1mPOST /api/fingerprint/init HTTP/1.1[0m" 500 -
+2026-01-16 17:59:26,150 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:59:26] "OPTIONS /api/fingerprint/init HTTP/1.1" 200 -
+2026-01-16 17:59:26,460 - FingerprintController - INFO - Initializing fingerprint controller on COM16
+2026-01-16 17:59:26,468 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 17:59:26] "[35m[1mPOST /api/fingerprint/init HTTP/1.1[0m" 500 -
+2026-01-16 18:01:52,667 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 18:01:52] "POST /api/encode_face HTTP/1.1" 200 -
+2026-01-16 18:01:52,672 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 18:01:52] "OPTIONS /api/face/compare HTTP/1.1" 200 -
+2026-01-16 18:01:52,989 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 18:01:52] "POST /api/face/compare HTTP/1.1" 200 -
+2026-01-16 18:01:58,085 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 18:01:58] "OPTIONS /api/fingerprint/init HTTP/1.1" 200 -
+2026-01-16 18:01:58,392 - FingerprintController - INFO - Initializing fingerprint controller on COM11
+2026-01-16 18:02:01,157 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 18:02:01] "[35m[1mPOST /api/fingerprint/init HTTP/1.1[0m" 500 -
+2026-01-16 18:02:05,962 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 18:02:05] "OPTIONS /api/fingerprint/init HTTP/1.1" 200 -
+2026-01-16 18:02:06,270 - FingerprintController - INFO - Initializing fingerprint controller on COM11
+2026-01-16 18:02:09,038 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 18:02:09] "POST /api/fingerprint/init HTTP/1.1" 200 -
+2026-01-16 18:02:09,043 - FingerprintController - INFO - Verifying fingerprint...
+2026-01-16 18:02:09,043 - FingerprintController - INFO - Retrieved 1 fingerprint records from file
+2026-01-16 18:02:09,129 - FingerprintController - INFO - [info] Place finger to verify
+2026-01-16 18:02:09,971 - FingerprintController - INFO - [success] Match found
+2026-01-16 18:02:09,971 - FingerprintController - INFO - Match found! ID: 3, Confidence: 97%
+2026-01-16 18:02:09,972 - FingerprintController - INFO - Successfully logged verification data to verification.json
+2026-01-16 18:02:09,973 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 18:02:09] "POST /api/fingerprint/verify HTTP/1.1" 200 -
+2026-01-16 18:09:20,531 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 18:09:20] "POST /api/encode_face HTTP/1.1" 200 -
+2026-01-16 18:09:20,537 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 18:09:20] "OPTIONS /api/face/compare HTTP/1.1" 200 -
+2026-01-16 18:09:20,842 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 18:09:20] "POST /api/face/compare HTTP/1.1" 200 -
+2026-01-16 18:09:25,802 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 18:09:25] "OPTIONS /api/fingerprint/init HTTP/1.1" 200 -
+2026-01-16 18:09:26,111 - FingerprintController - INFO - Initializing fingerprint controller on COM11
+2026-01-16 18:09:28,879 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 18:09:28] "POST /api/fingerprint/init HTTP/1.1" 200 -
+2026-01-16 18:09:28,883 - FingerprintController - INFO - Verifying fingerprint...
+2026-01-16 18:09:28,883 - FingerprintController - INFO - Retrieved 1 fingerprint records from file
+2026-01-16 18:09:28,971 - FingerprintController - INFO - [info] Place finger to verify
+2026-01-16 18:09:29,788 - FingerprintController - INFO - [success] Match found
+2026-01-16 18:09:29,788 - FingerprintController - INFO - Match found! ID: 3, Confidence: 97%
+2026-01-16 18:09:29,789 - FingerprintController - INFO - Successfully logged verification data to verification.json
+2026-01-16 18:09:29,790 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 18:09:29] "POST /api/fingerprint/verify HTTP/1.1" 200 -
+2026-01-16 18:12:21,299 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 18:12:21] "OPTIONS /api/fingerprint/delete/1 HTTP/1.1" 200 -
+2026-01-16 18:12:21,563 - FingerprintController - INFO - Deleting fingerprint for voter ID: 1
+2026-01-16 18:12:22,700 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 18:12:22] "[31m[1mDELETE /api/fingerprint/delete/1 HTTP/1.1[0m" 400 -
+2026-01-16 18:12:30,822 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 18:12:30] "OPTIONS /api/fingerprint/delete/2 HTTP/1.1" 200 -
+2026-01-16 18:12:31,129 - FingerprintController - INFO - Deleting fingerprint for voter ID: 2
+2026-01-16 18:12:32,214 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 18:12:32] "[31m[1mDELETE /api/fingerprint/delete/2 HTTP/1.1[0m" 400 -

@@ -1,0 +1,20 @@
+[
+  {
+    "status": "success",
+    "message": "Match found with ID 3",
+    "voterID": 3,
+    "voterName": "velu",
+    "confidence": 97,
+    "fingerprintEncoding": "FPR1000",
+    "timestamp": "2026-01-16T18:02:09.971812"
+  },
+  {
+    "status": "success",
+    "message": "Match found with ID 3",
+    "voterID": 3,
+    "voterName": "velu",
+    "confidence": 97,
+    "fingerprintEncoding": "FPR1000",
+    "timestamp": "2026-01-16T18:09:29.788467"
+  }
+]
