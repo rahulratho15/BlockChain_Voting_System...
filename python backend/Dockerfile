@@ -18,12 +18,20 @@ WORKDIR /app
 # Install dlib from pre-built wheel first (avoids memory-intensive compilation)
 RUN pip install --no-cache-dir dlib-bin
 
-# Copy requirements and install other dependencies
+# Copy requirements and convert encoding if needed
 COPY requirements.txt .
 
-# Install remaining dependencies (skip dlib since already installed)
-RUN pip install --no-cache-dir $(grep -v "^dlib$" requirements.txt | tr '\n' ' ')
-RUN pip install --no-cache-dir gunicorn
+# Install dependencies directly (dlib-bin provides dlib)
+RUN pip install --no-cache-dir \
+    flask==3.1.0 \
+    flask-cors==5.0.1 \
+    numpy>=1.26.0 \
+    opencv-python==4.11.0.86 \
+    pyserial==3.5 \
+    requests==2.32.3 \
+    python-dotenv==1.1.0 \
+    face-recognition \
+    gunicorn
 
 # Copy application code
 COPY . .
