@@ -749,15 +749,10 @@ We welcome contributions! Please follow these steps:
 
 ---
 
-## 📄 License
-
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
-
----
-
 ## 👥 Authors
 
 - **Rahul** - *Initial Development* - [@rahulratho15](https://github.com/rahulratho15)
+- email; rahulrathnavel15@gmail.com
 
 ---
 
@@ -770,10 +765,3 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ---
 
-<p align="center">
-  <strong>⭐ Star this repository if you found it helpful! ⭐</strong>
-</p>
-
-<p align="center">
-  Made with ❤️ for Secure Elections
-</p>
