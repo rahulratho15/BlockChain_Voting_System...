@@ -17,18 +17,17 @@ export default function RootLayout({ children }) {
 }
 */
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '@/styles/globals.css';
 import { ThirdwebProvider } from "thirdweb/react";
-export default function RootLayout({ children }) {
-  return (
-    <html lang="en">
-      <body
-      >
-        <ThirdwebProvider>
-          {children}
-        </ThirdwebProvider>
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+    return (
+        <html lang="en">
+            <body
+            >
+                <ThirdwebProvider>
+                    {children}
+                </ThirdwebProvider>
 
-      </body>
-    </html>
-  );
+            </body>
+        </html>
+    );
 }

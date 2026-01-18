@@ -217,3 +217,43 @@
 2026-01-16 18:12:30,822 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 18:12:30] "OPTIONS /api/fingerprint/delete/2 HTTP/1.1" 200 -
 2026-01-16 18:12:31,129 - FingerprintController - INFO - Deleting fingerprint for voter ID: 2
 2026-01-16 18:12:32,214 - werkzeug - INFO - 127.0.0.1 - - [16/Jan/2026 18:12:32] "[31m[1mDELETE /api/fingerprint/delete/2 HTTP/1.1[0m" 400 -
+2026-01-17 19:13:18,059 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.7:5000
+2026-01-17 19:13:18,060 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-01-17 19:13:18,063 - werkzeug - INFO -  * Restarting with stat
+2026-01-17 19:13:20,460 - werkzeug - WARNING -  * Debugger is active!
+2026-01-17 19:13:20,463 - werkzeug - INFO -  * Debugger PIN: 594-395-059
+2026-01-17 19:14:11,323 - werkzeug - INFO - 127.0.0.1 - - [17/Jan/2026 19:14:11] "POST /api/encode_face HTTP/1.1" 200 -
+2026-01-17 19:14:11,330 - werkzeug - INFO - 127.0.0.1 - - [17/Jan/2026 19:14:11] "OPTIONS /api/face/compare HTTP/1.1" 200 -
+2026-01-17 19:14:11,642 - werkzeug - INFO - 127.0.0.1 - - [17/Jan/2026 19:14:11] "POST /api/face/compare HTTP/1.1" 200 -
+2026-01-17 19:51:22,787 - werkzeug - INFO - 127.0.0.1 - - [17/Jan/2026 19:51:22] "OPTIONS /api/fingerprint/init HTTP/1.1" 200 -
+2026-01-17 19:51:23,046 - FingerprintController - INFO - Initializing fingerprint controller on COM11
+2026-01-17 19:51:23,371 - werkzeug - INFO - 127.0.0.1 - - [17/Jan/2026 19:51:23] "[35m[1mPOST /api/fingerprint/init HTTP/1.1[0m" 500 -
+2026-01-17 19:51:45,483 - werkzeug - INFO - 127.0.0.1 - - [17/Jan/2026 19:51:45] "POST /api/encode_face HTTP/1.1" 200 -
+2026-01-17 19:51:45,806 - werkzeug - INFO - 127.0.0.1 - - [17/Jan/2026 19:51:45] "OPTIONS /api/face/compare HTTP/1.1" 200 -
+2026-01-17 19:51:46,054 - werkzeug - INFO - 127.0.0.1 - - [17/Jan/2026 19:51:46] "POST /api/face/compare HTTP/1.1" 200 -
+2026-01-17 19:51:49,966 - werkzeug - INFO - 127.0.0.1 - - [17/Jan/2026 19:51:49] "OPTIONS /api/fingerprint/init HTTP/1.1" 200 -
+2026-01-17 19:51:50,275 - FingerprintController - INFO - Initializing fingerprint controller on COM11
+2026-01-17 19:51:50,286 - werkzeug - INFO - 127.0.0.1 - - [17/Jan/2026 19:51:50] "[35m[1mPOST /api/fingerprint/init HTTP/1.1[0m" 500 -
+2026-01-17 20:00:47,583 - werkzeug - INFO - 127.0.0.1 - - [17/Jan/2026 20:00:47] "POST /api/encode_face HTTP/1.1" 200 -
+2026-01-17 20:00:47,591 - werkzeug - INFO - 127.0.0.1 - - [17/Jan/2026 20:00:47] "OPTIONS /api/face/compare HTTP/1.1" 200 -
+2026-01-17 20:00:47,903 - werkzeug - INFO - 127.0.0.1 - - [17/Jan/2026 20:00:47] "POST /api/face/compare HTTP/1.1" 200 -
+2026-01-18 11:43:59,436 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.7:5000
+2026-01-18 11:43:59,436 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-01-18 11:43:59,439 - werkzeug - INFO -  * Restarting with stat
+2026-01-18 11:44:01,247 - werkzeug - WARNING -  * Debugger is active!
+2026-01-18 11:44:01,253 - werkzeug - INFO -  * Debugger PIN: 594-395-059
+2026-01-18 11:47:48,299 - werkzeug - INFO - 127.0.0.1 - - [18/Jan/2026 11:47:48] "POST /api/encode_face HTTP/1.1" 200 -
+2026-01-18 11:47:48,304 - werkzeug - INFO - 127.0.0.1 - - [18/Jan/2026 11:47:48] "OPTIONS /api/face/compare HTTP/1.1" 200 -
+2026-01-18 11:47:48,622 - werkzeug - INFO - 127.0.0.1 - - [18/Jan/2026 11:47:48] "POST /api/face/compare HTTP/1.1" 200 -
+2026-01-18 11:48:08,479 - FaceEncodingAPI - ERROR - Error processing image: No faces found in the image
+2026-01-18 11:48:08,480 - werkzeug - INFO - 127.0.0.1 - - [18/Jan/2026 11:48:08] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-18 11:48:15,703 - FaceEncodingAPI - ERROR - Error processing image: No faces found in the image
+2026-01-18 11:48:15,704 - werkzeug - INFO - 127.0.0.1 - - [18/Jan/2026 11:48:15] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
+2026-01-18 11:49:51,584 - werkzeug - INFO - 127.0.0.1 - - [18/Jan/2026 11:49:51] "POST /api/encode_face HTTP/1.1" 200 -
+2026-01-18 12:01:25,370 - werkzeug - INFO -  * Detected change in 'E:\\Blockchain-Voting-System-main\\Blockchain-Voting-System-main\\python backend\\app.py', reloading

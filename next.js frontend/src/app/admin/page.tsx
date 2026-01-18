@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, FormEvent } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
     createThirdwebClient,
     getContract,
@@ -15,57 +15,22 @@ import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables);
 import 'bootstrap/dist/css/bootstrap.min.css';
-import styles from '@/styles/admin.module.css';
 
-// ===== TYPE DEFINITIONS =====
-interface Candidate {
-    id: bigint;
-    name: string;
-    voteCount: bigint;
-}
-
-interface Voter {
-    voterID: bigint;
-    name: string;
-    hasVoted: boolean;
-}
-
-interface Winner {
-    id: bigint;
-    name: string;
-    partyName: string;
-}
-
-type MessageType = 'info' | 'success' | 'error' | 'warning';
-type TabType = 'dashboard' | 'candidates' | 'voters';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 // Election states enum
 const ElectionState = {
     NOT_STARTED: 0,
     ONGOING: 1,
     ENDED: 2
-} as const;
+};
 
 // Translated election state messages
-const ElectionStateMessages: Record<number, string> = {
+const ElectionStateMessages: { [key: number]: string } = {
     0: "Not Started",
     1: "Election Ongoing",
     2: "Election Ended"
 };
-
-// ===== ICON COMPONENTS =====
-const ClipboardCheckIcon = () => <span className={styles.icon}>📋</span>;
-const UserIcon = () => <span className={styles.icon}>👤</span>;
-const UserGroupIcon = () => <span className={styles.icon}>👥</span>;
-const DocumentDownloadIcon = () => <span className={styles.icon}>📥</span>;
-const ArrowPathIcon = ({ spinning }: { spinning?: boolean }) => (
-    <span className={`${styles.icon} ${spinning ? styles.iconSpin : ''}`}>🔄</span>
-);
-const ChartBarIcon = () => <span className={styles.icon}>📊</span>;
-const PlusIcon = () => <span className={styles.icon}>➕</span>;
-const TrashIcon = () => <span className={styles.icon}>🗑️</span>;
-const CheckCircleIcon = () => <span className={styles.icon}>✅</span>;
-const XCircleIcon = () => <span className={styles.icon}>❌</span>;
 
 const Admin = () => {
     // Initialize ThirdWeb client
@@ -82,28 +47,28 @@ const Admin = () => {
     const { mutate: sendTransaction, isPending } = useSendTransaction();
 
     // Election state data
-    const [electionState, setElectionState] = useState<number>(0);
-    const [electionStatus, setElectionStatus] = useState<string>("Not Started");
-    const [totalVoterCount, setTotalVoterCount] = useState<number>(0);
-    const [totalCandidateCount, setTotalCandidateCount] = useState<number>(0);
-    const [candidates, setCandidates] = useState<Candidate[]>([]);
-    const [voters, setVoters] = useState<Voter[]>([]);
-    const [winners, setWinners] = useState<Winner[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [message, setMessage] = useState<string>("");
-    const [messageType, setMessageType] = useState<MessageType>("info");
+    const [electionState, setElectionState] = useState(0);
+    const [electionStatus, setElectionStatus] = useState("Not Started");
+    const [totalVoterCount, setTotalVoterCount] = useState(0);
+    const [totalCandidateCount, setTotalCandidateCount] = useState(0);
+    const [candidates, setCandidates] = useState<any[]>([]);
+    const [voters, setVoters] = useState<any[]>([]);
+    const [winners, setWinners] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [message, setMessage] = useState("");
+    const [messageType, setMessageType] = useState("info");
 
     // Form data
-    const [newCandidateName, setNewCandidateName] = useState<string>("");
-    const [newPartyName, setNewPartyName] = useState<string>("");
-    const [selectedVoterToRemove, setSelectedVoterToRemove] = useState<string>("");
-    const [selectedCandidateToRemove, setSelectedCandidateToRemove] = useState<string>("");
+    const [newCandidateName, setNewCandidateName] = useState("");
+    const [newPartyName, setNewPartyName] = useState("");
+    const [selectedVoterToRemove, setSelectedVoterToRemove] = useState("");
+    const [selectedCandidateToRemove, setSelectedCandidateToRemove] = useState("");
 
     // UI state
-    const [activeTab, setActiveTab] = useState<TabType>("dashboard");
-    const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState<boolean>(false);
+    const [activeTab, setActiveTab] = useState("dashboard");
+    const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
     const [confirmAction, setConfirmAction] = useState<(() => Promise<void>) | null>(null);
-    const [confirmMessage, setConfirmMessage] = useState<string>("");
+    const [confirmMessage, setConfirmMessage] = useState("");
 
     // Refs
     const votingChartRef = useRef<HTMLCanvasElement>(null);
@@ -233,7 +198,7 @@ const Admin = () => {
                 params: [],
             });
 
-            setCandidates((candidateData as Candidate[]) || []);
+            setCandidates(candidateData ? [...candidateData] : []);
             return candidateData;
         } catch (error) {
             console.error("Error fetching candidates:", error);
@@ -250,7 +215,7 @@ const Admin = () => {
                 params: [],
             });
 
-            setVoters((voterData as Voter[]) || []);
+            setVoters(voterData ? [...voterData] : []);
             return voterData;
         } catch (error) {
             console.error("Error fetching voters:", error);
@@ -267,7 +232,7 @@ const Admin = () => {
                 params: [],
             });
 
-            setWinners((winnerData as Winner[]) || []);
+            setWinners(winnerData ? [...winnerData] : []);
             return winnerData;
         } catch (error) {
             console.error("Error fetching winners:", error);
@@ -285,24 +250,22 @@ const Admin = () => {
         }
 
         const ctx = votingChartRef.current.getContext('2d');
-        if (!ctx) return;
 
         // Format the data for the chart
         const labels = candidates.map(c => c.name);
         const data = candidates.map(c => Number(c.voteCount));
 
         // Create a new chart
-        votingChartInstance.current = new Chart(ctx, {
+        votingChartInstance.current = new Chart(ctx!, {
             type: 'bar',
             data: {
                 labels: labels,
                 datasets: [{
                     label: 'Votes',
                     data: data,
-                    backgroundColor: 'rgba(99, 102, 241, 0.6)',
-                    borderColor: 'rgba(99, 102, 241, 1)',
-                    borderWidth: 2,
-                    borderRadius: 8,
+                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
                 }]
             },
             options: {
@@ -366,7 +329,6 @@ const Admin = () => {
             setMessage("Election start transaction submitted. Please wait for confirmation.");
             setMessageType("success");
 
-            // Wait a moment before refreshing to allow transaction to process
             setTimeout(refreshDashboardData, 5000);
         } catch (error: any) {
             console.error("Error starting election:", error);
@@ -401,7 +363,6 @@ const Admin = () => {
             setMessage("Election end transaction submitted. Please wait for confirmation.");
             setMessageType("success");
 
-            // Wait a moment before refreshing to allow transaction to process
             setTimeout(refreshDashboardData, 5000);
         } catch (error: any) {
             console.error("Error ending election:", error);
@@ -436,10 +397,8 @@ const Admin = () => {
             setMessage("New election setup transaction submitted. Please wait for confirmation.");
             setMessageType("success");
 
-            // Reset local state
             setWinners([]);
 
-            // Wait a moment before refreshing to allow transaction to process
             setTimeout(refreshDashboardData, 5000);
         } catch (error: any) {
             console.error("Error creating new election:", error);
@@ -451,7 +410,7 @@ const Admin = () => {
     };
 
     // Handle candidate registration
-    const handleRegisterCandidate = async (e: FormEvent) => {
+    const handleRegisterCandidate = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!contract || !activeAccount) {
@@ -482,11 +441,9 @@ const Admin = () => {
             setMessage(`Candidate registration submitted for: ${newCandidateName}`);
             setMessageType("success");
 
-            // Clear form
             setNewCandidateName("");
             setNewPartyName("");
 
-            // Wait a moment before refreshing to allow transaction to process
             setTimeout(refreshDashboardData, 5000);
         } catch (error: any) {
             console.error("Error registering candidate:", error);
@@ -498,7 +455,7 @@ const Admin = () => {
     };
 
     // Handle removing a candidate
-    const handleRemoveCandidate = async (candidateID: bigint) => {
+    const handleRemoveCandidate = async (candidateID: any) => {
         if (!contract || !activeAccount) {
             setMessage("Please connect your wallet first");
             setMessageType("error");
@@ -521,7 +478,6 @@ const Admin = () => {
             setMessage(`Candidate removal submitted for ID: ${candidateID}`);
             setMessageType("success");
 
-            // Wait a moment before refreshing to allow transaction to process
             setTimeout(refreshDashboardData, 5000);
         } catch (error: any) {
             console.error("Error removing candidate:", error);
@@ -533,7 +489,7 @@ const Admin = () => {
     };
 
     // Handle removing a voter
-    const handleRemoveVoter = async (voterID: bigint) => {
+    const handleRemoveVoter = async (voterID: any) => {
         if (!contract || !activeAccount) {
             setMessage("Please connect your wallet first");
             setMessageType("error");
@@ -545,7 +501,6 @@ const Admin = () => {
             setMessage(`Removing voter ID: ${voterID}...`);
             setMessageType("info");
 
-            // 1. First remove from blockchain
             const transaction = prepareContractCall({
                 contract,
                 method: "function removeVoter(uint256 voterID)",
@@ -554,9 +509,8 @@ const Admin = () => {
 
             await sendTransaction(transaction);
 
-            // 2. Then remove from fingerprint sensor via API
             try {
-                const response = await fetch(`http://localhost:5000/api/fingerprint/delete/${voterID}`, {
+                const response = await fetch(`${API_URL}/api/fingerprint/delete/${voterID}`, {
                     method: 'DELETE'
                 });
 
@@ -606,16 +560,13 @@ const Admin = () => {
             setMessage("Generating election results PDF...");
             setMessageType("info");
 
-            // Create a new PDF document
             const pdfDoc = await PDFDocument.create();
-            const page = pdfDoc.addPage([595.28, 841.89]); // A4 size
+            const page = pdfDoc.addPage([595.28, 841.89]);
             const { width, height } = page.getSize();
 
-            // Get the standard font
             const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
             const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
-            // Add title
             page.drawText('Election Results Report', {
                 x: 50,
                 y: height - 50,
@@ -624,7 +575,6 @@ const Admin = () => {
                 color: rgb(0, 0, 0),
             });
 
-            // Add election status
             page.drawText(`Election Status: ${electionStatus}`, {
                 x: 50,
                 y: height - 100,
@@ -633,7 +583,6 @@ const Admin = () => {
                 color: rgb(0, 0, 0),
             });
 
-            // Add statistics
             page.drawText(`Total Registered Voters: ${totalVoterCount}`, {
                 x: 50,
                 y: height - 130,
@@ -650,7 +599,6 @@ const Admin = () => {
                 color: rgb(0, 0, 0),
             });
 
-            // Count voted and not voted
             const votedCount = voters.filter(v => v.hasVoted).length;
 
             page.drawText(`Total Votes Cast: ${votedCount}`, {
@@ -671,7 +619,6 @@ const Admin = () => {
                 color: rgb(0, 0, 0),
             });
 
-            // Add candidate results header
             page.drawText('Candidate Results', {
                 x: 50,
                 y: height - 230,
@@ -680,7 +627,6 @@ const Admin = () => {
                 color: rgb(0, 0, 0),
             });
 
-            // Add candidate results
             let yPos = height - 260;
             page.drawText('ID', { x: 50, y: yPos, size: 12, font: boldFont });
             page.drawText('Name', { x: 100, y: yPos, size: 12, font: boldFont });
@@ -704,7 +650,6 @@ const Admin = () => {
                 yPos -= 20;
             });
 
-            // Add winners section if election has ended
             if (electionState === ElectionState.ENDED && winners.length > 0) {
                 yPos -= 20;
 
@@ -731,7 +676,6 @@ const Admin = () => {
                 });
             }
 
-            // Add timestamp
             const now = new Date();
             page.drawText(`Report generated: ${now.toLocaleString()}`, {
                 x: 50,
@@ -741,13 +685,10 @@ const Admin = () => {
                 color: rgb(0.5, 0.5, 0.5),
             });
 
-            // Serialize the PDF to bytes
             const pdfBytes = await pdfDoc.save();
 
-            // Create a blob from the PDF bytes (convert Uint8Array to ArrayBuffer)
             const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
 
-            // Create a link element and trigger download
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = `election-results-${Date.now()}.pdf`;
@@ -779,56 +720,29 @@ const Admin = () => {
 
     const stats = calculateStats();
 
-    // Get status badge class
-    const getStatusBadgeClass = () => {
-        switch (electionState) {
-            case ElectionState.NOT_STARTED:
-                return styles.statusNotStarted;
-            case ElectionState.ONGOING:
-                return styles.statusOngoing;
-            case ElectionState.ENDED:
-                return styles.statusEnded;
-            default:
-                return styles.statusNotStarted;
-        }
-    };
-
-    // Get alert class
-    const getAlertClass = () => {
-        switch (messageType) {
-            case 'success':
-                return styles.alertSuccess;
-            case 'error':
-                return styles.alertError;
-            case 'warning':
-                return styles.alertWarning;
-            default:
-                return styles.alertInfo;
-        }
-    };
-
     // Render confirmation dialog
     const renderConfirmDialog = () => {
         if (!isConfirmDialogOpen) return null;
 
         return (
-            <div className={styles.dialogOverlay}>
-                <div className={styles.dialogContent}>
-                    <h3 className={styles.dialogTitle}>Confirm Action</h3>
-                    <p className={styles.dialogMessage}>{confirmMessage}</p>
-                    <div className={styles.dialogActions}>
-                        <button
-                            className={`${styles.btn} ${styles.btnSecondary}`}
-                            onClick={() => setIsConfirmDialogOpen(false)}
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            className={`${styles.btn} ${styles.btnDanger}`}
-                            onClick={handleConfirmAction}
-                        >
-                            Confirm
-                        </button>
+            <div className="modal d-block" tabIndex={-1} style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                <div className="modal-dialog modal-dialog-centered">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title">Confirm Action</h5>
+                            <button type="button" className="btn-close" onClick={() => setIsConfirmDialogOpen(false)}></button>
+                        </div>
+                        <div className="modal-body">
+                            <p>{confirmMessage}</p>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" onClick={() => setIsConfirmDialogOpen(false)}>
+                                Cancel
+                            </button>
+                            <button type="button" className="btn btn-danger" onClick={handleConfirmAction}>
+                                Confirm
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -838,78 +752,67 @@ const Admin = () => {
     // Render the dashboard tab
     const renderDashboard = () => {
         return (
-            <div className={styles.dashboardGrid}>
-                {/* Status Card */}
-                <div className={`${styles.statCard} ${styles.statusCard}`}>
-                    <div className={styles.cardHeader}>
-                        <ClipboardCheckIcon />
-                        Election Status
-                    </div>
-                    <div className={styles.cardBody}>
-                        <span className={`${styles.statusBadge} ${getStatusBadgeClass()}`}>
-                            {electionStatus}
-                        </span>
-
-                        <div className={`${styles.spaceY3} ${styles.mt6}`}>
-                            <button
-                                onClick={() => openConfirmDialog(handleStartElection, "Are you sure you want to start the election? This action cannot be undone.")}
-                                disabled={electionState !== ElectionState.NOT_STARTED || isLoading}
-                                className={`${styles.btn} ${styles.btnSuccess} ${styles.btnFull}`}
-                            >
-                                Start Election
-                            </button>
-
-                            <button
-                                onClick={() => openConfirmDialog(handleEndElection, "Are you sure you want to end the election? This will finalize results and no more votes can be cast.")}
-                                disabled={electionState !== ElectionState.ONGOING || isLoading}
-                                className={`${styles.btn} ${styles.btnDanger} ${styles.btnFull}`}
-                            >
-                                End Election
-                            </button>
-
-                            <button
-                                onClick={() => openConfirmDialog(handleNewElection, "WARNING: This will delete ALL election data including voters, candidates, and results. This cannot be undone!")}
-                                disabled={electionState !== ElectionState.ENDED || isLoading}
-                                className={`${styles.btn} ${styles.btnWarning} ${styles.btnFull}`}
-                            >
-                                Start New Election
-                            </button>
+            <div className="row">
+                <div className="col-md-4 mb-4">
+                    <div className="card bg-primary text-white h-100">
+                        <div className="card-header">
+                            <h5 className="mb-0">Election Status</h5>
+                        </div>
+                        <div className="card-body">
+                            <h2 className="display-6">{electionStatus}</h2>
+                            <div className="mt-4">
+                                <button
+                                    onClick={() => openConfirmDialog(handleStartElection, "Are you sure you want to start the election?")}
+                                    disabled={electionState !== ElectionState.NOT_STARTED || isLoading}
+                                    className="btn btn-light w-100 mb-2"
+                                >
+                                    Start Election
+                                </button>
+                                <button
+                                    onClick={() => openConfirmDialog(handleEndElection, "Are you sure you want to end the election?")}
+                                    disabled={electionState !== ElectionState.ONGOING || isLoading}
+                                    className="btn btn-warning w-100 mb-2"
+                                >
+                                    End Election
+                                </button>
+                                <button
+                                    onClick={() => openConfirmDialog(handleNewElection, "WARNING: This will delete ALL election data. Continue?")}
+                                    disabled={electionState !== ElectionState.ENDED || isLoading}
+                                    className="btn btn-danger w-100"
+                                >
+                                    Start New Election
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Voter Stats Card */}
-                <div className={`${styles.statCard} ${styles.voterCard}`}>
-                    <div className={styles.cardHeader}>
-                        <UserIcon />
-                        Voter Statistics
-                    </div>
-                    <div className={styles.cardBody}>
-                        <div className={styles.spaceY4}>
-                            <div>
-                                <div className={styles.statLabel}>Total Registered Voters</div>
-                                <div className={styles.statValue}>{totalVoterCount}</div>
-                            </div>
-
+                <div className="col-md-4 mb-4">
+                    <div className="card bg-success text-white h-100">
+                        <div className="card-header">
+                            <h5 className="mb-0">Voter Statistics</h5>
+                        </div>
+                        <div className="card-body">
+                            <h2 className="display-6">{totalVoterCount}</h2>
+                            <p>Total Registered Voters</p>
                             {electionState !== ElectionState.NOT_STARTED && (
                                 <>
-                                    <div className={styles.statsGrid}>
-                                        <div>
-                                            <div className={styles.statLabel}>Voted</div>
-                                            <div className={styles.statValue}>{stats.votedCount}</div>
+                                    <div className="row mt-3">
+                                        <div className="col-6">
+                                            <h4>{stats.votedCount}</h4>
+                                            <small>Voted</small>
                                         </div>
-                                        <div>
-                                            <div className={styles.statLabel}>Not Voted</div>
-                                            <div className={styles.statValue}>{stats.notVotedCount}</div>
+                                        <div className="col-6">
+                                            <h4>{stats.notVotedCount}</h4>
+                                            <small>Not Voted</small>
                                         </div>
                                     </div>
-
-                                    <div>
-                                        <div className={styles.statLabel}>Participation Rate</div>
-                                        <div className={styles.statValue}>{stats.participationRate}%</div>
-                                        <div className={styles.progressBar}>
+                                    <div className="mt-3">
+                                        <h4>{stats.participationRate}%</h4>
+                                        <small>Participation Rate</small>
+                                        <div className="progress mt-2">
                                             <div
-                                                className={styles.progressFill}
+                                                className="progress-bar bg-light"
                                                 style={{ width: `${stats.participationRate}%` }}
                                             ></div>
                                         </div>
@@ -920,40 +823,30 @@ const Admin = () => {
                     </div>
                 </div>
 
-                {/* Candidate Stats Card */}
-                <div className={`${styles.statCard} ${styles.candidateCard}`}>
-                    <div className={styles.cardHeader}>
-                        <UserGroupIcon />
-                        Candidate Statistics
-                    </div>
-                    <div className={styles.cardBody}>
-                        <div className={styles.spaceY4}>
-                            <div>
-                                <div className={styles.statLabel}>Total Candidates</div>
-                                <div className={styles.statValue}>{totalCandidateCount}</div>
-                            </div>
-
+                <div className="col-md-4 mb-4">
+                    <div className="card bg-info text-white h-100">
+                        <div className="card-header">
+                            <h5 className="mb-0">Candidate Statistics</h5>
+                        </div>
+                        <div className="card-body">
+                            <h2 className="display-6">{totalCandidateCount}</h2>
+                            <p>Total Candidates</p>
                             {electionState === ElectionState.ENDED && winners.length > 0 && (
-                                <div>
-                                    <div className={styles.statLabel}>Winner(s)</div>
-                                    <div className={`${styles.spaceY2} ${styles.mt4}`}>
-                                        {winners.map((winner, index) => (
-                                            <div key={index} className={styles.winnerBadge}>
-                                                <CheckCircleIcon />
-                                                {winner.name} (ID: {winner.id.toString()})
-                                            </div>
-                                        ))}
-                                    </div>
+                                <div className="mt-3">
+                                    <h6>Winner(s):</h6>
+                                    {winners.map((winner, index) => (
+                                        <div key={index} className="badge bg-light text-dark me-2 mb-2">
+                                            {winner.name}
+                                        </div>
+                                    ))}
                                 </div>
                             )}
-
                             {electionState !== ElectionState.NOT_STARTED && (
                                 <button
                                     onClick={generateElectionResultsPDF}
                                     disabled={isLoading}
-                                    className={`${styles.btn} ${styles.btnPrimary} ${styles.btnFull} ${styles.mt4}`}
+                                    className="btn btn-light w-100 mt-3"
                                 >
-                                    <DocumentDownloadIcon />
                                     Download Report
                                 </button>
                             )}
@@ -961,62 +854,61 @@ const Admin = () => {
                     </div>
                 </div>
 
-                {/* Tab Navigation & Message */}
-                <div className={`${styles.statCard} ${styles.fullWidth}`}>
-                    <div className={styles.cardBody}>
-                        <div className={`${styles.flexBetween} ${styles.flexWrap} ${styles.gap3}`}>
-                            <div className={styles.tabContainer}>
+                <div className="col-12 mb-4">
+                    <div className="card">
+                        <div className="card-body">
+                            <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                <div className="btn-group">
+                                    <button
+                                        onClick={() => setActiveTab("dashboard")}
+                                        className={`btn ${activeTab === "dashboard" ? "btn-primary" : "btn-outline-primary"}`}
+                                    >
+                                        Dashboard
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveTab("candidates")}
+                                        className={`btn ${activeTab === "candidates" ? "btn-primary" : "btn-outline-primary"}`}
+                                    >
+                                        Candidates
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveTab("voters")}
+                                        className={`btn ${activeTab === "voters" ? "btn-primary" : "btn-outline-primary"}`}
+                                    >
+                                        Voters
+                                    </button>
+                                </div>
+
                                 <button
-                                    onClick={() => setActiveTab("dashboard")}
-                                    className={`${styles.tabButton} ${activeTab === "dashboard" ? styles.tabButtonActive : ""}`}
+                                    onClick={refreshDashboardData}
+                                    disabled={isLoading}
+                                    className="btn btn-success"
                                 >
-                                    <ChartBarIcon />
-                                    Dashboard
-                                </button>
-                                <button
-                                    onClick={() => setActiveTab("candidates")}
-                                    className={`${styles.tabButton} ${activeTab === "candidates" ? styles.tabButtonActive : ""}`}
-                                >
-                                    <UserGroupIcon />
-                                    Candidates
-                                </button>
-                                <button
-                                    onClick={() => setActiveTab("voters")}
-                                    className={`${styles.tabButton} ${activeTab === "voters" ? styles.tabButtonActive : ""}`}
-                                >
-                                    <UserIcon />
-                                    Voters
+                                    {isLoading ? "Refreshing..." : "Refresh Data"}
                                 </button>
                             </div>
 
-                            <button
-                                onClick={refreshDashboardData}
-                                disabled={isLoading}
-                                className={`${styles.btn} ${styles.btnSuccess}`}
-                            >
-                                <ArrowPathIcon spinning={isLoading} />
-                                {isLoading ? "Refreshing..." : "Refresh Data"}
-                            </button>
+                            {message && (
+                                <div className={`alert mt-3 ${messageType === "success" ? "alert-success" :
+                                    messageType === "error" ? "alert-danger" : "alert-info"
+                                    }`}>
+                                    {message}
+                                </div>
+                            )}
                         </div>
-
-                        {message && (
-                            <div className={`${styles.alert} ${getAlertClass()}`}>
-                                {message}
-                            </div>
-                        )}
                     </div>
                 </div>
 
-                {/* Voting Results Chart - Only show if election is ongoing or ended */}
                 {(electionState === ElectionState.ONGOING || electionState === ElectionState.ENDED) && (
-                    <div className={`${styles.statCard} ${styles.chartCard}`}>
-                        <div className={styles.cardHeader}>
-                            <ChartBarIcon />
-                            Live Voting Results
-                        </div>
-                        <div className={styles.cardBody}>
-                            <div className={styles.chartWrapper}>
-                                <canvas ref={votingChartRef} />
+                    <div className="col-12 mb-4">
+                        <div className="card">
+                            <div className="card-header">
+                                <h5 className="mb-0">Live Voting Results</h5>
+                            </div>
+                            <div className="card-body">
+                                <div style={{ height: '400px' }}>
+                                    <canvas ref={votingChartRef}></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1028,102 +920,95 @@ const Admin = () => {
     // Render the candidates tab
     const renderCandidates = () => {
         return (
-            <div className={styles.spaceY4}>
-                {/* Candidate Registration Form */}
-                <div className={styles.statCard}>
-                    <div className={`${styles.cardHeader} ${styles.statusCard}`}>
-                        <PlusIcon />
-                        Register New Candidate
-                    </div>
-                    <div className={styles.cardBody}>
-                        <form onSubmit={handleRegisterCandidate} className={styles.spaceY4}>
-                            <div className={styles.formGroup}>
-                                <label htmlFor="candidateName" className={styles.formLabel}>
-                                    Candidate Name <span className={styles.required}>*</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    id="candidateName"
-                                    className={styles.formInput}
-                                    value={newCandidateName}
-                                    onChange={(e) => setNewCandidateName(e.target.value)}
-                                    placeholder="Enter candidate full name"
-                                    required
-                                />
-                            </div>
-
-                            <button
-                                type="submit"
-                                disabled={isLoading || !newCandidateName.trim() || electionState !== ElectionState.NOT_STARTED}
-                                className={`${styles.btn} ${styles.btnPrimary} ${styles.btnFull}`}
-                            >
-                                <PlusIcon />
-                                Register Candidate
-                            </button>
-
-                            {electionState !== ElectionState.NOT_STARTED && (
-                                <div className={`${styles.alert} ${styles.alertWarning}`}>
-                                    Candidates can only be registered before the election starts.
+            <div className="row">
+                <div className="col-md-6 mb-4">
+                    <div className="card">
+                        <div className="card-header bg-primary text-white">
+                            <h5 className="mb-0">Register New Candidate</h5>
+                        </div>
+                        <div className="card-body">
+                            <form onSubmit={handleRegisterCandidate}>
+                                <div className="mb-3">
+                                    <label htmlFor="candidateName" className="form-label">
+                                        Candidate Name <span className="text-danger">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="candidateName"
+                                        value={newCandidateName}
+                                        onChange={(e) => setNewCandidateName(e.target.value)}
+                                        placeholder="Enter candidate full name"
+                                        required
+                                    />
                                 </div>
-                            )}
-                        </form>
+
+                                <button
+                                    type="submit"
+                                    disabled={isLoading || !newCandidateName.trim() || electionState !== ElectionState.NOT_STARTED}
+                                    className="btn btn-primary w-100"
+                                >
+                                    Register Candidate
+                                </button>
+
+                                {electionState !== ElectionState.NOT_STARTED && (
+                                    <div className="alert alert-warning mt-3">
+                                        Candidates can only be registered before the election starts.
+                                    </div>
+                                )}
+                            </form>
+                        </div>
                     </div>
                 </div>
 
-                {/* Candidate List */}
-                <div className={styles.statCard}>
-                    <div className={`${styles.cardHeader} ${styles.candidateCard}`}>
-                        <UserGroupIcon />
-                        Candidates List
-                        <span className={styles.statusBadge} style={{ marginLeft: 'auto', background: 'white', color: 'var(--primary-600)' }}>
-                            Total: {candidates.length}
-                        </span>
-                    </div>
-                    <div className={styles.cardBody}>
-                        {candidates.length === 0 ? (
-                            <div className={styles.emptyState}>
-                                <div className={styles.emptyStateIcon}>👥</div>
-                                No candidates registered yet.
-                            </div>
-                        ) : (
-                            <div className={styles.tableContainer}>
-                                <table className={styles.table}>
-                                    <thead className={styles.tableHeader}>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Name</th>
-                                            {electionState !== ElectionState.NOT_STARTED && <th>Votes</th>}
-                                            <th style={{ textAlign: 'right' }}>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className={styles.tableBody}>
-                                        {candidates.map((candidate) => (
-                                            <tr key={candidate.id.toString()}>
-                                                <td style={{ fontWeight: 600 }}>{candidate.id.toString()}</td>
-                                                <td>{candidate.name}</td>
-                                                {electionState !== ElectionState.NOT_STARTED && (
-                                                    <td>{candidate.voteCount.toString()}</td>
-                                                )}
-                                                <td style={{ textAlign: 'right' }}>
-                                                    <button
-                                                        onClick={() => openConfirmDialog(
-                                                            () => handleRemoveCandidate(candidate.id),
-                                                            `Are you sure you want to remove candidate ${candidate.name}?`
-                                                        )}
-                                                        disabled={electionState !== ElectionState.NOT_STARTED}
-                                                        className={`${styles.btn} ${styles.btnDanger}`}
-                                                        style={{ padding: 'var(--space-2)' }}
-                                                        title="Remove candidate"
-                                                    >
-                                                        <TrashIcon />
-                                                    </button>
-                                                </td>
+                <div className="col-md-6 mb-4">
+                    <div className="card">
+                        <div className="card-header bg-info text-white d-flex justify-content-between">
+                            <h5 className="mb-0">Candidates List</h5>
+                            <span className="badge bg-light text-dark">Total: {candidates.length}</span>
+                        </div>
+                        <div className="card-body">
+                            {candidates.length === 0 ? (
+                                <p className="text-muted text-center">No candidates registered yet.</p>
+                            ) : (
+                                <div className="table-responsive">
+                                    <table className="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Name</th>
+                                                {electionState !== ElectionState.NOT_STARTED && <th>Votes</th>}
+                                                <th>Actions</th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        )}
+                                        </thead>
+                                        <tbody>
+                                            {candidates.map((candidate) => (
+                                                <tr key={candidate.id.toString()}>
+                                                    <td>{candidate.id.toString()}</td>
+                                                    <td>{candidate.name}</td>
+                                                    {electionState !== ElectionState.NOT_STARTED && (
+                                                        <td>{candidate.voteCount.toString()}</td>
+                                                    )}
+                                                    <td>
+                                                        <button
+                                                            onClick={() => openConfirmDialog(
+                                                                () => handleRemoveCandidate(candidate.id),
+                                                                `Remove candidate ${candidate.name}?`
+                                                            )}
+                                                            disabled={electionState !== ElectionState.NOT_STARTED}
+                                                            className="btn btn-sm btn-danger"
+                                                            title="Remove candidate"
+                                                        >
+                                                            Remove
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1133,57 +1018,46 @@ const Admin = () => {
     // Render the voters tab
     const renderVoters = () => {
         return (
-            <div className={styles.statCard}>
-                <div className={`${styles.cardHeader} ${styles.voterCard}`}>
-                    <UserIcon />
-                    Registered Voters
-                    <span className={styles.statusBadge} style={{ marginLeft: 'auto', background: 'white', color: 'var(--accent-emerald)' }}>
-                        Total: {voters.length}
-                    </span>
+            <div className="card">
+                <div className="card-header bg-success text-white d-flex justify-content-between">
+                    <h5 className="mb-0">Registered Voters</h5>
+                    <span className="badge bg-light text-dark">Total: {voters.length}</span>
                 </div>
-                <div className={styles.cardBody}>
+                <div className="card-body">
                     {voters.length === 0 ? (
-                        <div className={styles.emptyState}>
-                            <div className={styles.emptyStateIcon}>👤</div>
-                            No voters registered yet.
-                        </div>
+                        <p className="text-muted text-center">No voters registered yet.</p>
                     ) : (
-                        <div className={styles.tableContainer}>
-                            <table className={styles.table}>
-                                <thead className={styles.tableHeader}>
+                        <div className="table-responsive">
+                            <table className="table table-hover">
+                                <thead>
                                     <tr>
                                         <th>ID</th>
                                         <th>Name</th>
                                         <th>Voting Status</th>
-                                        <th style={{ textAlign: 'right' }}>Actions</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody className={styles.tableBody}>
+                                <tbody>
                                     {voters.map((voter) => (
                                         <tr key={voter.voterID.toString()}>
-                                            <td style={{ fontWeight: 600 }}>{voter.voterID.toString()}</td>
+                                            <td>{voter.voterID.toString()}</td>
                                             <td>{voter.name}</td>
                                             <td>
-                                                <span className={`${styles.statusBadge} ${voter.hasVoted ? styles.statusEnded : styles.statusNotStarted}`}>
-                                                    {voter.hasVoted ? (
-                                                        <><CheckCircleIcon /> Voted</>
-                                                    ) : (
-                                                        <><XCircleIcon /> Not Voted</>
-                                                    )}
+                                                <span className={`badge ${voter.hasVoted ? 'bg-success' : 'bg-warning'}`}>
+                                                    {voter.hasVoted ? "Voted" : "Not Voted"}
                                                 </span>
                                             </td>
-                                            <td style={{ textAlign: 'right' }}>
+                                            <td>
                                                 <button
                                                     onClick={() => openConfirmDialog(
                                                         () => handleRemoveVoter(voter.voterID),
-                                                        `Are you sure you want to remove voter ${voter.name}?`
+                                                        `Remove voter ${voter.name}?`
                                                     )}
                                                     disabled={electionState !== ElectionState.NOT_STARTED}
-                                                    className={`${styles.btn} ${styles.btnDanger}`}
-                                                    style={{ padding: 'var(--space-2)' }}
+                                                    className="btn btn-sm btn-danger"
                                                     title="Remove voter"
                                                 >
-                                                    <TrashIcon />
+                                                    Remove
                                                 </button>
                                             </td>
                                         </tr>
@@ -1198,40 +1072,32 @@ const Admin = () => {
     };
 
     return (
-        <div className={styles.pageContainer}>
-            <div className={styles.maxWidthContainer}>
-                {/* Header with Admin Dashboard title and Wallet Connect button */}
-                <div className={styles.headerCard}>
-                    <div className={styles.headerContent}>
-                        <div>
-                            <h1 className={styles.headerTitle}>Election Admin Dashboard</h1>
-                            <p className={styles.headerSubtitle}>Manage election process and view results</p>
-                        </div>
-                        <ConnectButton client={client} />
+        <div className="container mt-4">
+            <div className="card shadow mb-4">
+                <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 className="mb-0">Election Admin Dashboard</h1>
+                        <small>Manage election process and view results</small>
                     </div>
+                    <ConnectButton client={client} />
                 </div>
-
-                {/* Main content */}
-                {!activeAccount ? (
-                    <div className={styles.statCard}>
-                        <div className={styles.authRequired}>
-                            <div className={styles.authIcon}>🔒</div>
-                            <h2 className={styles.authTitle}>Admin Authentication Required</h2>
-                            <p className={styles.authMessage}>
-                                Please connect your wallet to access the admin dashboard. Only authorized admin wallets can perform election management.
-                            </p>
-                        </div>
-                    </div>
-                ) : (
-                    <div className={styles.spaceY4}>
-                        {activeTab === "dashboard" && renderDashboard()}
-                        {activeTab === "candidates" && renderCandidates()}
-                        {activeTab === "voters" && renderVoters()}
-                    </div>
-                )}
             </div>
 
-            {/* Confirmation Dialog */}
+            {!activeAccount ? (
+                <div className="card">
+                    <div className="card-body text-center py-5">
+                        <h2>Admin Authentication Required</h2>
+                        <p className="text-muted">Please connect your wallet to access the admin dashboard.</p>
+                    </div>
+                </div>
+            ) : (
+                <>
+                    {activeTab === "dashboard" && renderDashboard()}
+                    {activeTab === "candidates" && renderCandidates()}
+                    {activeTab === "voters" && renderVoters()}
+                </>
+            )}
+
             {renderConfirmDialog()}
         </div>
     );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, ChangeEvent, FormEvent } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
     createThirdwebClient,
     getContract,
@@ -9,23 +9,24 @@ import {
 import { ConnectButton, useActiveAccount, useSendTransaction } from "thirdweb/react";
 import { defineChain } from "thirdweb/chains";
 import axios from "axios";
-import styles from "@/styles/register.module.css";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export default function VoterRegistration() {
-    const [fullName, setFullName] = useState<string>("");
-    const [voterID, setVoterID] = useState<string>("");
-    const [faceDisabled, setFaceDisabled] = useState<boolean>(false);
-    const [fingerDisabled, setFingerDisabled] = useState<boolean>(false);
-    const [faceEncoding, setFaceEncoding] = useState<string>("");
-    const [isRegistering, setIsRegistering] = useState<boolean>(false);
-    const [message, setMessage] = useState<string>("");
-    const [faceCaptured, setFaceCaptured] = useState<boolean>(false);
-    const [fingerprintScanned, setFingerprintScanned] = useState<boolean>(false);
-    const [showVideo, setShowVideo] = useState<boolean>(false);
+    const [fullName, setFullName] = useState("");
+    const [voterID, setVoterID] = useState("");
+    const [faceDisabled, setFaceDisabled] = useState(false);
+    const [fingerDisabled, setFingerDisabled] = useState(false);
+    const [faceEncoding, setFaceEncoding] = useState("");
+    const [isRegistering, setIsRegistering] = useState(false);
+    const [message, setMessage] = useState("");
+    const [faceCaptured, setFaceCaptured] = useState(false);
+    const [fingerprintScanned, setFingerprintScanned] = useState(false);
+    const [isWebcamActive, setIsWebcamActive] = useState(false);
 
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    let stream: MediaStream | null = null;
+    let stream = null;
 
     const client = createThirdwebClient({
         clientId: "f6ba07193b19ed9857c4871a303bb536",
@@ -48,14 +49,14 @@ export default function VoterRegistration() {
 
     const startWebcam = async () => {
         try {
-            setShowVideo(true);
-            stream = await navigator.mediaDevices.getUserMedia({
+            const mediaStream = await navigator.mediaDevices.getUserMedia({
                 video: true,
                 audio: false
             });
 
             if (videoRef.current) {
-                videoRef.current.srcObject = stream;
+                videoRef.current.srcObject = mediaStream;
+                setIsWebcamActive(true);
             }
         } catch (error) {
             console.error("Error accessing webcam:", error);
@@ -69,7 +70,7 @@ export default function VoterRegistration() {
             tracks.forEach(track => track.stop());
             videoRef.current.srcObject = null;
         }
-        setShowVideo(false);
+        setIsWebcamActive(false);
     };
 
     const captureImage = async () => {
@@ -82,12 +83,10 @@ export default function VoterRegistration() {
         const video = videoRef.current;
         const context = canvas.getContext("2d");
 
-        if (!context) return;
-
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
 
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        context!.drawImage(video, 0, 0, canvas.width, canvas.height);
 
         try {
             const blob = await new Promise<Blob | null>(resolve => {
@@ -117,13 +116,14 @@ export default function VoterRegistration() {
             const formData = new FormData();
             formData.append("file", imageFile);
 
-            const response = await axios.post("http://localhost:5000/api/encode_face", formData, {
+            const response = await axios.post(`${API_URL}/api/encode_face`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
             });
 
             setFaceEncoding(response.data.data.encoding.join(", "));
+            //console.log("e", faceEncoding);
 
             if (response.data.success) {
                 setFaceEncoding(JSON.stringify(response.data.data.encoding));
@@ -138,11 +138,11 @@ export default function VoterRegistration() {
         }
     };
 
-    const initFingerprintScanner = async (): Promise<boolean> => {
+    const initFingerprintScanner = async () => {
         try {
             setMessage("Initializing fingerprint scanner...");
 
-            const response = await axios.post("http://localhost:5000/api/fingerprint/init", {
+            const response = await axios.post(`${API_URL}/api/fingerprint/init`, {
                 port: "COM11"
             });
 
@@ -160,7 +160,7 @@ export default function VoterRegistration() {
         }
     };
 
-    const generateUniqueFingerEncoding = (): string => {
+    const generateUniqueFingerEncoding = () => {
         const prefix = "FPR100000000012C0003FFFF0080E100000104DF000C38D8";
         const uniquePart = Array(20).fill(null)
             .map(() => Math.floor(Math.random() * 16).toString(16))
@@ -169,7 +169,7 @@ export default function VoterRegistration() {
         return `${prefix}${uniquePart}${suffix}`;
     };
 
-    const [fingerEncoding, setFingerEncoding] = useState<string>(generateUniqueFingerEncoding());
+    const [fingerEncoding, setFingerEncoding] = useState(generateUniqueFingerEncoding());
 
     const scanFingerprint = async () => {
         try {
@@ -181,7 +181,7 @@ export default function VoterRegistration() {
 
             setMessage("Please place your finger on the scanner...");
 
-            const response = await axios.post("http://localhost:5000/api/fingerprint/register", {
+            const response = await axios.post(`${API_URL}/api/fingerprint/register`, {
                 voter_id: voterID,
                 voter_name: fullName
             });
@@ -199,17 +199,15 @@ export default function VoterRegistration() {
         }
     };
 
-    const canRegister = (): boolean => {
-        return Boolean(
-            fullName &&
+    const canRegister = () => {
+        return fullName &&
             voterID &&
             activeAccount?.address &&
             (faceCaptured || faceDisabled) &&
-            (fingerprintScanned || fingerDisabled)
-        );
+            (fingerprintScanned || fingerDisabled);
     };
 
-    const handleSubmit = async (e: FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!canRegister()) {
@@ -235,6 +233,7 @@ export default function VoterRegistration() {
                 ],
             });
             sendTransaction(transaction);
+            //console.log("Registration submitted to blockchain");
             setMessage("Registration submitted to blockchain. Please wait for confirmation.");
 
             setTimeout(() => {
@@ -254,187 +253,179 @@ export default function VoterRegistration() {
         };
     }, []);
 
-    // Determine alert class based on message content
-    const getAlertClass = (): string => {
-        if (message.toLowerCase().includes('success') || message.toLowerCase().includes('successful')) {
-            return styles.alertSuccess;
-        }
-        return styles.alertWarning;
-    };
-
     return (
-        <div className={styles.pageContainer}>
-            <div className={styles.mainCard}>
-                <div className={styles.cardHeader}>
-                    <h2 className={styles.cardTitle}>📝 Voter Registration</h2>
-                </div>
-
-                <div className={styles.cardBody}>
-                    <div className={styles.walletConnect}>
-                        <ConnectButton client={client} />
-                    </div>
-
-                    <form onSubmit={handleSubmit}>
-                        <div className={styles.formGroup}>
-                            <label htmlFor="fullName" className={styles.formLabel}>Full Name</label>
-                            <input
-                                type="text"
-                                id="fullName"
-                                className={styles.formInput}
-                                placeholder="Enter your full name"
-                                value={fullName}
-                                onChange={(e: ChangeEvent<HTMLInputElement>) => setFullName(e.target.value)}
-                                required
-                            />
+        <div className="container mt-5">
+            <div className="row justify-content-center">
+                <div className="col-md-8">
+                    <div className="card shadow">
+                        <div className="card-header bg-primary text-white">
+                            <h2 className="mb-0">Voter Registration</h2>
                         </div>
-
-                        <div className={styles.formGroup}>
-                            <label htmlFor="voterID" className={styles.formLabel}>
-                                Voter ID (e.g., Aadhaar, SSN, National ID)
-                            </label>
-                            <input
-                                type="text"
-                                id="voterID"
-                                className={styles.formInput}
-                                placeholder="Enter your ID number"
-                                value={voterID}
-                                onChange={(e: ChangeEvent<HTMLInputElement>) => setVoterID(e.target.value)}
-                                required
-                            />
-                        </div>
-
-                        <div className={styles.disabilitySection}>
-                            <h5 className={styles.disabilitySectionTitle}>♿ Disability Accommodations</h5>
-
-                            <div className={styles.switchWrapper}>
-                                <input
-                                    type="checkbox"
-                                    className={styles.switchInput}
-                                    id="fingerDisabled"
-                                    checked={fingerDisabled}
-                                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                                        setFingerDisabled(e.target.checked);
-                                        if (e.target.checked) {
-                                            setFingerprintScanned(true);
-                                        } else {
-                                            setFingerprintScanned(false);
-                                        }
-                                    }}
-                                />
-                                <label className={styles.switch} htmlFor="fingerDisabled"></label>
-                                <span className={styles.switchLabel}>Hand/Fingerprint Disability</span>
+                        <div className="card-body">
+                            <div className="mb-4 text-center">
+                                <ConnectButton client={client} />
                             </div>
 
-                            <div className={styles.switchWrapper}>
-                                <input
-                                    type="checkbox"
-                                    className={styles.switchInput}
-                                    id="faceDisabled"
-                                    checked={faceDisabled}
-                                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                                        setFaceDisabled(e.target.checked);
-                                        if (e.target.checked) {
-                                            setFaceCaptured(true);
-                                        } else {
-                                            setFaceCaptured(false);
-                                        }
-                                    }}
-                                />
-                                <label className={styles.switch} htmlFor="faceDisabled"></label>
-                                <span className={styles.switchLabel}>Face Recognition Disability</span>
-                            </div>
-                        </div>
+                            <form onSubmit={handleSubmit}>
+                                <div className="mb-3">
+                                    <label htmlFor="fullName" className="form-label">Full Name</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="fullName"
+                                        value={fullName}
+                                        onChange={(e) => setFullName(e.target.value)}
+                                        required
+                                    />
+                                </div>
 
-                        <div className={styles.biometricGrid}>
-                            <button
-                                type="button"
-                                className={`${styles.biometricBtn} ${faceCaptured ? styles.biometricBtnCompleted : faceDisabled ? styles.biometricBtnCompleted : ''}`}
-                                onClick={startWebcam}
-                                disabled={faceDisabled || isRegistering || faceCaptured}
-                            >
-                                <span className={styles.biometricIcon}>📸</span>
-                                <span className={styles.biometricLabel}>
-                                    {faceDisabled ? 'Exempted' : faceCaptured ? 'Captured ✓' : 'Capture Face'}
-                                </span>
-                            </button>
+                                <div className="mb-3">
+                                    <label htmlFor="voterID" className="form-label">Voter ID (e.g., Aadhaar, SSN, National ID)</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="voterID"
+                                        value={voterID}
+                                        onChange={(e) => setVoterID(e.target.value)}
+                                        required
+                                    />
+                                </div>
 
-                            <button
-                                type="button"
-                                className={`${styles.biometricBtn} ${fingerprintScanned ? styles.biometricBtnCompleted : fingerDisabled ? styles.biometricBtnCompleted : ''}`}
-                                onClick={scanFingerprint}
-                                disabled={fingerDisabled || isRegistering || fingerprintScanned}
-                            >
-                                <span className={styles.biometricIcon}>👆</span>
-                                <span className={styles.biometricLabel}>
-                                    {fingerDisabled ? 'Exempted' : fingerprintScanned ? 'Scanned ✓' : 'Scan Fingerprint'}
-                                </span>
-                            </button>
-                        </div>
+                                <div className="mb-4">
+                                    <h5>Disability Accommodations</h5>
+                                    <div className="form-check form-switch mb-2">
+                                        <input
+                                            className="form-check-input"
+                                            type="checkbox"
+                                            id="fingerDisabled"
+                                            checked={fingerDisabled}
+                                            onChange={(e) => {
+                                                setFingerDisabled(e.target.checked);
+                                                if (e.target.checked) {
+                                                    setFingerprintScanned(true);
+                                                } else {
+                                                    setFingerprintScanned(false);
+                                                }
+                                            }}
+                                        />
+                                        <label className="form-check-label" htmlFor="fingerDisabled">
+                                            Hand/Fingerprint Disability
+                                        </label>
+                                    </div>
+                                    <div className="form-check form-switch">
+                                        <input
+                                            className="form-check-input"
+                                            type="checkbox"
+                                            id="faceDisabled"
+                                            checked={faceDisabled}
+                                            onChange={(e) => {
+                                                setFaceDisabled(e.target.checked);
+                                                if (e.target.checked) {
+                                                    setFaceCaptured(true);
+                                                } else {
+                                                    setFaceCaptured(false);
+                                                }
+                                            }}
+                                        />
+                                        <label className="form-check-label" htmlFor="faceDisabled">
+                                            Face Recognition Disability
+                                        </label>
+                                    </div>
+                                </div>
 
-                        {/* Video preview for face capture */}
-                        {showVideo && (
-                            <div style={{ marginBottom: 'var(--space-6)' }}>
-                                <div className={styles.videoContainer}>
+                                <div className="row mb-4">
+                                    <div className="col-md-6">
+                                        <button
+                                            type="button"
+                                            className={`btn w-100 ${faceDisabled ? 'btn-secondary' : 'btn-primary'}`}
+                                            onClick={startWebcam}
+                                            disabled={faceDisabled || isRegistering}
+                                        >
+                                            <i className="bi bi-camera me-2"></i>
+                                            Capture Face
+                                        </button>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <button
+                                            type="button"
+                                            className={`btn w-100 ${fingerDisabled ? 'btn-secondary' : 'btn-primary'}`}
+                                            onClick={scanFingerprint}
+                                            disabled={fingerDisabled || isRegistering}
+                                        >
+                                            <i className="bi bi-fingerprint me-2"></i>
+                                            Scan Fingerprint
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="mb-4">
                                     <video
                                         ref={videoRef}
                                         autoPlay
-                                        muted
-                                        className={styles.video}
+                                        playsInline
+                                        className="w-100 rounded"
+                                        style={{ display: isWebcamActive ? 'block' : 'none' }}
                                     ></video>
+                                    <canvas ref={canvasRef} style={{ display: 'none' }}></canvas>
+
+                                    {isWebcamActive && (
+                                        <button
+                                            type="button"
+                                            className="btn btn-success w-100 mt-2"
+                                            onClick={captureImage}
+                                        >
+                                            <i className="bi bi-camera-fill me-2"></i>
+                                            Capture Now
+                                        </button>
+                                    )}
                                 </div>
 
+                                {message && (
+                                    <div className={`alert ${message.includes("success") || message.includes("successful")
+                                        ? "alert-success"
+                                        : "alert-warning"
+                                        }`}>
+                                        {message}
+                                    </div>
+                                )}
+
                                 <button
-                                    type="button"
-                                    className={`${styles.btn} ${styles.btnSuccess} ${styles.btnFull} ${styles.captureBtn}`}
-                                    onClick={captureImage}
+                                    type="submit"
+                                    className={`btn w-100 ${canRegister() && !isRegistering
+                                        ? 'btn-success'
+                                        : 'btn-secondary'
+                                        }`}
+                                    disabled={!canRegister() || isRegistering}
                                 >
-                                    📷 Capture Now
+                                    {isRegistering ? (
+                                        <>
+                                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                            Registering...
+                                        </>
+                                    ) : (
+                                        "Register as Voter"
+                                    )}
                                 </button>
 
-                                <canvas ref={canvasRef} style={{ display: 'none' }}></canvas>
-                            </div>
-                        )}
-
-                        {message && (
-                            <div className={`${styles.alert} ${getAlertClass()}`}>
-                                {message}
-                            </div>
-                        )}
-
-                        <button
-                            type="submit"
-                            className={styles.registerBtn}
-                            disabled={!canRegister() || isRegistering}
-                        >
-                            {isRegistering ? (
-                                <>
-                                    <span className={styles.spinner}></span>
-                                    Registering...
-                                </>
-                            ) : (
-                                "Register as Voter"
-                            )}
-                        </button>
-
-                        <div className={styles.statusGrid}>
-                            <div className={`${styles.statusItem} ${faceDisabled ? styles.statusDisabled :
-                                faceCaptured ? styles.statusComplete :
-                                    styles.statusPending
-                                }`}>
-                                {faceDisabled ? '🔄 Face Recognition Disabled' :
-                                    faceCaptured ? '✅ Face Captured' :
-                                        '⏳ Face Not Captured'}
-                            </div>
-                            <div className={`${styles.statusItem} ${fingerDisabled ? styles.statusDisabled :
-                                fingerprintScanned ? styles.statusComplete :
-                                    styles.statusPending
-                                }`}>
-                                {fingerDisabled ? '🔄 Fingerprint Disabled' :
-                                    fingerprintScanned ? '✅ Fingerprint Scanned' :
-                                        '⏳ Fingerprint Not Scanned'}
-                            </div>
+                                <div className="row mt-3">
+                                    <div className="col-md-6">
+                                        <div className={`alert ${faceCaptured || faceDisabled ? 'alert-success' : 'alert-secondary'} py-2`}>
+                                            <small>
+                                                {faceDisabled ? "Face Recognition Disabled" : (faceCaptured ? "✓ Face Captured" : "Face Not Captured")}
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <div className={`alert ${fingerprintScanned || fingerDisabled ? 'alert-success' : 'alert-secondary'} py-2`}>
+                                            <small>
+                                                {fingerDisabled ? "Fingerprint Disabled" : (fingerprintScanned ? "✓ Fingerprint Scanned" : "Fingerprint Not Scanned")}
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>

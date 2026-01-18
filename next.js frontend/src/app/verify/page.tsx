@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, FormEvent } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
     createThirdwebClient,
     getContract,
@@ -10,48 +10,30 @@ import {
 import { ConnectButton, useActiveAccount, useSendTransaction } from "thirdweb/react";
 import { defineChain } from "thirdweb/chains";
 import axios from "axios";
-import styles from "@/styles/verify.module.css";
 
-// ===== TYPE DEFINITIONS =====
-interface VoterData {
-    id: bigint;
-    name: string;
-    faceEncoding: string;
-    fingerEncoding: string;
-    faceDisabled: boolean;
-    fingerDisabled: boolean;
-    hasVoted: boolean;
-}
-
-interface Candidate {
-    id: bigint;
-    name: string;
-    voteCount: bigint;
-}
-
-type StepType = 'login' | 'verification' | 'voting' | 'success';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export default function VoteCasting() {
     // State variables
-    const [voterId, setVoterId] = useState<string>("");
-    const [isAuthenticating, setIsAuthenticating] = useState<boolean>(false);
-    const [message, setMessage] = useState<string>("");
-    const [step, setStep] = useState<StepType>("login");
-    const [voterData, setVoterData] = useState<VoterData | null>(null);
-    const [candidates, setCandidates] = useState<Candidate[]>([]);
-    const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
-    const [faceDisabled, setFaceDisabled] = useState<boolean>(false);
-    const [fingerDisabled, setFingerDisabled] = useState<boolean>(false);
-    const [faceCaptured, setFaceCaptured] = useState<boolean>(false);
-    const [fingerprintScanned, setFingerprintScanned] = useState<boolean>(false);
-    const [isSubmittingVote, setIsSubmittingVote] = useState<boolean>(false);
-    const [allVoters, setAllVoters] = useState<VoterData[]>([]);
-    const [isLoadingData, setIsLoadingData] = useState<boolean>(true);
-    const [showVideo, setShowVideo] = useState<boolean>(false);
+    const [voterId, setVoterId] = useState("");
+    const [isAuthenticating, setIsAuthenticating] = useState(false);
+    const [message, setMessage] = useState("");
+    const [step, setStep] = useState("login");
+    const [voterData, setVoterData] = useState<any>(null);
+    const [candidates, setCandidates] = useState<any[]>([]);
+    const [selectedCandidate, setSelectedCandidate] = useState<any>(null);
+    const [faceDisabled, setFaceDisabled] = useState(false);
+    const [fingerDisabled, setFingerDisabled] = useState(false);
+    const [faceCaptured, setFaceCaptured] = useState(false);
+    const [fingerprintScanned, setFingerprintScanned] = useState(false);
+    const [isSubmittingVote, setIsSubmittingVote] = useState(false);
+    const [allVoters, setAllVoters] = useState<any[]>([]);
+    const [isLoadingData, setIsLoadingData] = useState(true);
+    const [isWebcamActive, setIsWebcamActive] = useState(false);
 
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    let stream: MediaStream | null = null;
+    let stream = null;
 
     // Initialize ThirdWeb client
     const client = createThirdwebClient({
@@ -93,12 +75,12 @@ export default function VoteCasting() {
             });
 
             if (votersResponse) {
-                setAllVoters(votersResponse as VoterData[]);
+                setAllVoters([...votersResponse]);
                 console.log("All voters:", votersResponse);
             }
 
             if (candidatesResponse) {
-                setCandidates(candidatesResponse as Candidate[]);
+                setCandidates([...candidatesResponse]);
                 console.log("All candidates:", candidatesResponse);
             }
 
@@ -112,7 +94,7 @@ export default function VoteCasting() {
     };
 
     // Authenticate voter by ID
-    const authenticateVoter = async (e: FormEvent) => {
+    const authenticateVoter = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!voterId.trim()) {
@@ -158,14 +140,14 @@ export default function VoteCasting() {
     // Start webcam when capture face button is clicked
     const startWebcam = async () => {
         try {
-            setShowVideo(true);
-            stream = await navigator.mediaDevices.getUserMedia({
+            const mediaStream = await navigator.mediaDevices.getUserMedia({
                 video: true,
                 audio: false
             });
 
             if (videoRef.current) {
-                videoRef.current.srcObject = stream;
+                videoRef.current.srcObject = mediaStream;
+                setIsWebcamActive(true);
             }
         } catch (error) {
             console.error("Error accessing webcam:", error);
@@ -180,7 +162,7 @@ export default function VoteCasting() {
             tracks.forEach(track => track.stop());
             videoRef.current.srcObject = null;
         }
-        setShowVideo(false);
+        setIsWebcamActive(false);
     };
 
     // Capture image from webcam
@@ -194,14 +176,12 @@ export default function VoteCasting() {
         const video = videoRef.current;
         const context = canvas.getContext("2d");
 
-        if (!context) return;
-
         // Set canvas dimensions to match video
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
 
         // Draw video frame to canvas
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        context!.drawImage(video, 0, 0, canvas.width, canvas.height);
 
         // Convert canvas to blob
         try {
@@ -228,11 +208,11 @@ export default function VoteCasting() {
         }
     };
 
-    const getFaceEncodingFromImage = async (imageFile: File): Promise<number[]> => {
+    const getFaceEncodingFromImage = async (imageFile: File) => {
         const formData = new FormData();
         formData.append("file", imageFile);
 
-        const response = await axios.post("http://localhost:5000/api/encode_face", formData, {
+        const response = await axios.post(`${API_URL}/api/encode_face`, formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
             },
@@ -250,9 +230,7 @@ export default function VoteCasting() {
         try {
             setMessage("Verifying face...");
 
-            if (!voterData) return;
-
-            const response = await axios.post("http://localhost:5000/api/face/compare", {
+            const response = await axios.post(`${API_URL}/api/face/compare`, {
                 encoding1: JSON.parse(voterData.faceEncoding),
                 encoding2: await getFaceEncodingFromImage(imageFile),
                 threshold: 0.6
@@ -264,18 +242,18 @@ export default function VoteCasting() {
             } else {
                 setMessage(`Face verification failed: ${response.data.message || "No match found"}`);
             }
-        } catch (error: any) {
+        } catch (error) {
             console.error("Error verifying face:", error);
             setMessage("Failed to verify face");
         }
     };
 
     // Initialize fingerprint scanner
-    const initFingerprintScanner = async (): Promise<boolean> => {
+    const initFingerprintScanner = async () => {
         try {
             setMessage("Initializing fingerprint scanner...");
 
-            const response = await axios.post("http://localhost:5000/api/fingerprint/init", {
+            const response = await axios.post(`${API_URL}/api/fingerprint/init`, {
                 port: "COM11" // Adjust port as needed
             });
 
@@ -306,7 +284,7 @@ export default function VoteCasting() {
             setMessage("Please place your finger on the scanner...");
 
             // Verify fingerprint
-            const response = await axios.post("http://localhost:5000/api/fingerprint/verify");
+            const response = await axios.post(`${API_URL}/api/fingerprint/verify`);
             console.log(response)
 
             if (response.data.success &&
@@ -325,7 +303,7 @@ export default function VoteCasting() {
     };
 
     // Check if verification is complete
-    const isVerificationComplete = (): boolean => {
+    const isVerificationComplete = () => {
         return (faceCaptured || faceDisabled) && (fingerprintScanned || fingerDisabled);
     };
 
@@ -340,7 +318,7 @@ export default function VoteCasting() {
     };
 
     // Select a candidate
-    const selectCandidate = (candidate: Candidate) => {
+    const selectCandidate = (candidate: any) => {
         setSelectedCandidate(candidate);
     };
 
@@ -392,87 +370,40 @@ export default function VoteCasting() {
         };
     }, []);
 
-    // Get current step number for indicator
-    const getStepNumber = (): number => {
-        switch (step) {
-            case 'login': return 1;
-            case 'verification': return 2;
-            case 'voting': return 3;
-            case 'success': return 4;
-            default: return 1;
-        }
+    const onClickB = () => {
+        const transaction = prepareContractCall({
+            contract,
+            method:
+                "function castVote(uint256 voterID, uint256 candidateID)",
+            params: [BigInt(15), BigInt(1)],
+        });
+        sendTransaction(transaction);
     };
-
-    // Determine alert class based on message content
-    const getAlertClass = (): string => {
-        if (message.toLowerCase().includes('success') || message.toLowerCase().includes('successful')) {
-            return styles.alertSuccess;
-        }
-        if (message.toLowerCase().includes('failed') || message.toLowerCase().includes('error')) {
-            return styles.alertError;
-        }
-        return styles.alertWarning;
-    };
-
-    // Render step indicator
-    const renderStepIndicator = () => (
-        <div className={styles.stepIndicator}>
-            {['Login', 'Verify', 'Vote', 'Done'].map((label, index) => {
-                const stepNum = index + 1;
-                const currentStep = getStepNumber();
-                const isActive = stepNum === currentStep;
-                const isCompleted = stepNum < currentStep;
-
-                return (
-                    <div
-                        key={label}
-                        className={`${styles.step} ${isActive ? styles.active : ''} ${isCompleted ? styles.completed : ''}`}
-                    >
-                        <div className={styles.stepCircle}>
-                            {isCompleted ? '✓' : stepNum}
-                        </div>
-                        <span className={styles.stepLabel}>{label}</span>
-                    </div>
-                );
-            })}
-        </div>
-    );
 
     // Render login step
     const renderLoginStep = () => (
         <div>
-            <h2 className={styles.sectionTitle}>Voter Authentication</h2>
-            <p className={styles.sectionSubtitle}>Enter your voter ID to begin the verification process</p>
-
+            <h3 className="mb-4">Voter Authentication</h3>
             <form onSubmit={authenticateVoter}>
-                <div className={styles.formGroup}>
-                    <label htmlFor="voterId" className={styles.formLabel}>
+                <div className="mb-3">
+                    <label htmlFor="voterId" className="form-label">
                         Voter ID (e.g., Aadhaar, SSN, National ID)
                     </label>
                     <input
                         type="text"
+                        className="form-control"
                         id="voterId"
-                        className={styles.formInput}
-                        placeholder="Enter your ID number"
                         value={voterId}
                         onChange={(e) => setVoterId(e.target.value)}
                         required
                     />
                 </div>
-
                 <button
                     type="submit"
-                    className={`${styles.btn} ${styles.btnPrimary} ${styles.btnFull}`}
-                    disabled={isAuthenticating || !voterId.trim()}
+                    className="btn btn-primary w-100"
+                    disabled={isAuthenticating}
                 >
-                    {isAuthenticating ? (
-                        <>
-                            <span className={styles.loadingSpinner}></span>
-                            Authenticating...
-                        </>
-                    ) : (
-                        "Authenticate"
-                    )}
+                    {isAuthenticating ? "Authenticating..." : "Authenticate"}
                 </button>
             </form>
         </div>
@@ -481,95 +412,94 @@ export default function VoteCasting() {
     // Render verification step
     const renderVerificationStep = () => (
         <div>
-            <h2 className={styles.sectionTitle}>Identity Verification</h2>
-
-            <div className={styles.voterInfo}>
-                <div className={styles.voterInfoTitle}>Voter ID: {voterId}</div>
-                {voterData && <div className={styles.voterInfoSubtext}>Please complete the verification steps below</div>}
+            <h3 className="mb-4">Identity Verification</h3>
+            <div className="alert alert-info mb-4">
+                <strong>Voter ID:</strong> {voterId}
             </div>
 
-            <div className={styles.verificationGrid}>
-                <button
-                    type="button"
-                    className={`${styles.verifyBtn} ${faceCaptured ? styles.verifyBtnCompleted : faceDisabled ? styles.verifyBtnCompleted : ''}`}
-                    onClick={startWebcam}
-                    disabled={faceDisabled || faceCaptured}
-                >
-                    <span className={styles.verifyBtnIcon}>📸</span>
-                    <span className={styles.verifyBtnLabel}>
-                        {faceDisabled ? 'Exempted' : faceCaptured ? 'Verified ✓' : 'Verify Face'}
-                    </span>
-                </button>
-
-                <button
-                    type="button"
-                    className={`${styles.verifyBtn} ${fingerprintScanned ? styles.verifyBtnCompleted : fingerDisabled ? styles.verifyBtnCompleted : ''}`}
-                    onClick={verifyFingerprint}
-                    disabled={fingerDisabled || fingerprintScanned}
-                >
-                    <span className={styles.verifyBtnIcon}>👆</span>
-                    <span className={styles.verifyBtnLabel}>
-                        {fingerDisabled ? 'Exempted' : fingerprintScanned ? 'Verified ✓' : 'Verify Fingerprint'}
-                    </span>
-                </button>
-            </div>
-
-            {/* Video preview for face capture */}
-            {showVideo && (
-                <div style={{ marginBottom: 'var(--space-6)' }}>
-                    <div className={styles.videoContainer}>
-                        <video
-                            ref={videoRef}
-                            autoPlay
-                            muted
-                            className={styles.video}
-                        ></video>
-                    </div>
-
+            <div className="row mb-4">
+                <div className="col-md-6 mb-3">
                     <button
                         type="button"
-                        className={`${styles.btn} ${styles.btnSuccess} ${styles.btnFull}`}
-                        onClick={captureImage}
+                        className={`btn w-100 ${faceDisabled || faceCaptured ? 'btn-secondary' : 'btn-primary'}`}
+                        onClick={startWebcam}
+                        disabled={faceDisabled || faceCaptured}
                     >
-                        📷 Capture Now
+                        {faceDisabled ? "Face Exempted" : (faceCaptured ? "Face Verified ✓" : "Verify Face")}
                     </button>
-
-                    <canvas ref={canvasRef} style={{ display: 'none' }}></canvas>
                 </div>
-            )}
-
-            {/* Status indicators */}
-            <div className={styles.statusGrid}>
-                <div className={`${styles.statusItem} ${faceCaptured || faceDisabled ? styles.statusVerified : styles.statusPending}`}>
-                    {faceDisabled ? '🔄 Face: Disability Exemption' : faceCaptured ? '✅ Face: Verified' : '⏳ Face: Not Verified'}
-                </div>
-                <div className={`${styles.statusItem} ${fingerprintScanned || fingerDisabled ? styles.statusVerified : styles.statusPending}`}>
-                    {fingerDisabled ? '🔄 Fingerprint: Disability Exemption' : fingerprintScanned ? '✅ Fingerprint: Verified' : '⏳ Fingerprint: Not Verified'}
+                <div className="col-md-6 mb-3">
+                    <button
+                        type="button"
+                        className={`btn w-100 ${fingerDisabled || fingerprintScanned ? 'btn-secondary' : 'btn-primary'}`}
+                        onClick={verifyFingerprint}
+                        disabled={fingerDisabled || fingerprintScanned}
+                    >
+                        {fingerDisabled ? "Fingerprint Exempted" : (fingerprintScanned ? "Fingerprint Verified ✓" : "Verify Fingerprint")}
+                    </button>
                 </div>
             </div>
 
-            <div className={styles.buttonGrid2}>
-                <button
-                    type="button"
-                    className={`${styles.btn} ${styles.btnSecondary}`}
-                    onClick={() => {
-                        stopWebcam();
-                        setStep("login");
-                        setVoterData(null);
-                        setFaceCaptured(false);
-                        setFingerprintScanned(false);
-                    }}
-                >
-                    Back
-                </button>
-                <button
-                    type="button"
-                    className={`${styles.btn} ${isVerificationComplete() ? styles.btnSuccess : styles.btnSecondary}`}
-                    onClick={proceedToVoting}
-                    disabled={!isVerificationComplete()}
-                >
-                    Proceed to Voting
-                </button>
+            <div className="mb-4">
+                <video
+                    ref={videoRef}
+                    autoPlay
+                    playsInline
+                    className="w-100 rounded"
+                    style={{ display: isWebcamActive ? 'block' : 'none' }}
+                ></video>
+                <canvas ref={canvasRef} style={{ display: 'none' }}></canvas>
+
+                {isWebcamActive && (
+                    <button
+                        type="button"
+                        className="btn btn-success w-100 mt-2"
+                        onClick={captureImage}
+                    >
+                        Capture Now
+                    </button>
+                )}
+            </div>
+
+            <div className="row mb-4">
+                <div className="col-md-6">
+                    <div className={`alert ${faceCaptured || faceDisabled ? 'alert-success' : 'alert-secondary'} py-2`}>
+                        <small>Face: {faceDisabled ? "Disability Exemption" : (faceCaptured ? "Verified ✓" : "Not Verified")}</small>
+                    </div>
+                </div>
+                <div className="col-md-6">
+                    <div className={`alert ${fingerprintScanned || fingerDisabled ? 'alert-success' : 'alert-secondary'} py-2`}>
+                        <small>Fingerprint: {fingerDisabled ? "Disability Exemption" : (fingerprintScanned ? "Verified ✓" : "Not Verified")}</small>
+                    </div>
+                </div>
+            </div>
+
+            <div className="row">
+                <div className="col-md-6 mb-2">
+                    <button
+                        type="button"
+                        className="btn btn-secondary w-100"
+                        onClick={() => {
+                            stopWebcam();
+                            setStep("login");
+                            setVoterData(null);
+                            setFaceCaptured(false);
+                            setFingerprintScanned(false);
+                        }}
+                    >
+                        Back
+                    </button>
+                </div>
+                <div className="col-md-6 mb-2">
+                    <button
+                        type="button"
+                        className={`btn w-100 ${isVerificationComplete() ? 'btn-success' : 'btn-secondary'}`}
+                        onClick={proceedToVoting}
+                        disabled={!isVerificationComplete()}
+                    >
+                        Proceed to Voting
+                    </button>
+                </div>
             </div>
         </div>
     );
@@ -577,91 +507,89 @@ export default function VoteCasting() {
     // Render voting step
     const renderVotingStep = () => (
         <div>
-            <h2 className={styles.sectionTitle}>Cast Your Vote</h2>
-
-            <div className={styles.voterInfo}>
-                <div className={styles.voterInfoTitle}>Voter ID: {voterId}</div>
-                <div className={styles.voterInfoSubtext}>Please select one candidate to cast your vote</div>
+            <h3 className="mb-4">Cast Your Vote</h3>
+            <div className="alert alert-info mb-4">
+                <strong>Voter ID:</strong> {voterId}
             </div>
 
-            <div className={styles.candidateList}>
+            <h5 className="mb-3">Select a Candidate:</h5>
+            <div className="list-group mb-4">
                 {candidates.map((candidate) => (
-                    <div
+                    <button
                         key={candidate.id.toString()}
-                        className={`${styles.candidateCard} ${selectedCandidate?.id === candidate.id ? styles.candidateCardSelected : ''}`}
+                        type="button"
+                        className={`list-group-item list-group-item-action d-flex justify-content-between align-items-center ${selectedCandidate && selectedCandidate.id === candidate.id ? 'active' : ''
+                            }`}
                         onClick={() => selectCandidate(candidate)}
                     >
-                        <div className={styles.candidateRadio}></div>
-                        <div className={styles.candidateInfo}>
-                            <div className={styles.candidateName}>{candidate.name}</div>
-                            <div className={styles.candidateId}>ID: {candidate.id.toString()}</div>
+                        <div>
+                            <strong>{candidate.name}</strong>
+                            <br />
+                            <small>ID: {candidate.id.toString()}</small>
                         </div>
-                    </div>
+                        {selectedCandidate && selectedCandidate.id === candidate.id && (
+                            <span className="badge bg-white text-primary">Selected</span>
+                        )}
+                    </button>
                 ))}
             </div>
 
-            <div className={styles.buttonGrid}>
-                <button
-                    type="button"
-                    className={`${styles.btn} ${styles.btnSecondary}`}
-                    onClick={() => {
-                        setStep("verification");
-                        setSelectedCandidate(null);
-                    }}
-                >
-                    Back
-                </button>
-
-                {selectedCandidate && (
+            <div className="row">
+                <div className="col-md-4 mb-2">
                     <button
                         type="button"
-                        className={`${styles.btn} ${styles.btnWarning}`}
-                        onClick={resetSelection}
+                        className="btn btn-secondary w-100"
+                        onClick={() => {
+                            setStep("verification");
+                            setSelectedCandidate(null);
+                        }}
                     >
-                        Reset Choice
+                        Back
                     </button>
+                </div>
+                {selectedCandidate && (
+                    <div className="col-md-4 mb-2">
+                        <button
+                            type="button"
+                            className="btn btn-warning w-100"
+                            onClick={resetSelection}
+                        >
+                            Reset Choice
+                        </button>
+                    </div>
                 )}
-
-                <button
-                    type="button"
-                    className={`${styles.btn} ${selectedCandidate && !isSubmittingVote ? styles.btnSuccess : styles.btnSecondary}`}
-                    onClick={castVote}
-                    disabled={!selectedCandidate || isSubmittingVote}
-                    style={selectedCandidate ? {} : { gridColumn: 'span 2' }}
-                >
-                    {isSubmittingVote ? (
-                        <>
-                            <span className={styles.loadingSpinner}></span>
-                            Submitting...
-                        </>
-                    ) : (
-                        "Cast Vote"
-                    )}
-                </button>
+                <div className={selectedCandidate ? "col-md-4 mb-2" : "col-md-8 mb-2"}>
+                    <button
+                        type="button"
+                        className={`btn w-100 ${selectedCandidate && !isSubmittingVote ? 'btn-success' : 'btn-secondary'}`}
+                        onClick={castVote}
+                        disabled={!selectedCandidate || isSubmittingVote}
+                    >
+                        {isSubmittingVote ? "Submitting..." : "Cast Vote"}
+                    </button>
+                </div>
             </div>
         </div>
     );
 
     // Render success step
     const renderSuccessStep = () => (
-        <div className={styles.successContainer}>
-            <div className={styles.successIcon}>
-                <span className={styles.successIconCheck}>✓</span>
+        <div className="text-center">
+            <div className="mb-4">
+                <i className="bi bi-check-circle text-success" style={{ fontSize: '5rem' }}></i>
             </div>
-
-            <h2 className={styles.successTitle}>Vote Cast Successfully!</h2>
-            <p className={styles.successMessage}>Thank you for participating in this election. Your vote has been recorded on the blockchain.</p>
+            <h2 className="text-success mb-3">Vote Cast Successfully!</h2>
+            <p className="mb-4">Thank you for participating in this election. Your vote has been recorded on the blockchain.</p>
 
             {selectedCandidate && (
-                <div className={styles.successVoteInfo}>
-                    <div className={styles.successVoteLabel}>You voted for:</div>
-                    <div className={styles.successVoteName}>{selectedCandidate.name}</div>
+                <div className="alert alert-success">
+                    <strong>You voted for:</strong> {selectedCandidate.name}
                 </div>
             )}
 
             <button
                 type="button"
-                className={`${styles.btn} ${styles.btnPrimary} ${styles.btnFull}`}
+                className="btn btn-primary"
                 onClick={() => window.location.reload()}
             >
                 Return to Start
@@ -670,38 +598,44 @@ export default function VoteCasting() {
     );
 
     return (
-        <div className={styles.pageContainer}>
-            <div className={styles.mainCard}>
-                <div className={styles.cardHeader}>
-                    <h1 className={styles.cardTitle}>🗳️ Secure Blockchain Voting</h1>
-                </div>
+        <div className="container mt-5">
+            <div className="row justify-content-center">
+                <div className="col-md-8">
+                    <div className="card shadow">
+                        <div className="card-header bg-primary text-white">
+                            <h2 className="mb-0">Secure Voting</h2>
+                        </div>
+                        <div className="card-body">
+                            <div className="mb-4 text-center">
+                                <ConnectButton client={client} />
+                            </div>
 
-                <div className={styles.cardBody}>
-                    <div className={styles.walletConnect}>
-                        <ConnectButton client={client} />
+                            {message && (
+                                <div className={`alert ${message.includes("success") || message.includes("successful")
+                                    ? "alert-success"
+                                    : "alert-warning"
+                                    } mb-4`}>
+                                    {message}
+                                </div>
+                            )}
+
+                            {isLoadingData ? (
+                                <div className="text-center py-5">
+                                    <div className="spinner-border text-primary" role="status">
+                                        <span className="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p className="mt-3">Loading blockchain data...</p>
+                                </div>
+                            ) : (
+                                <>
+                                    {step === "login" && renderLoginStep()}
+                                    {step === "verification" && renderVerificationStep()}
+                                    {step === "voting" && renderVotingStep()}
+                                    {step === "success" && renderSuccessStep()}
+                                </>
+                            )}
+                        </div>
                     </div>
-
-                    {!isLoadingData && step !== 'success' && renderStepIndicator()}
-
-                    {message && (
-                        <div className={`${styles.alert} ${getAlertClass()}`}>
-                            {message}
-                        </div>
-                    )}
-
-                    {isLoadingData ? (
-                        <div className={styles.loadingContainer}>
-                            <div className={styles.loadingSpinner}></div>
-                            <p className={styles.loadingText}>Loading blockchain data...</p>
-                        </div>
-                    ) : (
-                        <>
-                            {step === "login" && renderLoginStep()}
-                            {step === "verification" && renderVerificationStep()}
-                            {step === "voting" && renderVotingStep()}
-                            {step === "success" && renderSuccessStep()}
-                        </>
-                    )}
                 </div>
             </div>
         </div>
