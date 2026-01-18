@@ -1,26 +1,29 @@
-# Use Python 3.10 with pre-built dlib support
-FROM python:3.10-slim
+# Use Python with pre-built dlib to avoid memory issues
+FROM python:3.10-slim-bullseye
 
-# Install system dependencies for dlib and face_recognition
-RUN apt-get update && apt-get install -y \
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     cmake \
     libopenblas-dev \
     liblapack-dev \
     libx11-dev \
     libgtk-3-dev \
-    libboost-python-dev \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
+# Set working directory  
 WORKDIR /app
 
-# Copy requirements first for caching
+# Install dlib from pre-built wheel first (avoids memory-intensive compilation)
+RUN pip install --no-cache-dir dlib-bin
+
+# Copy requirements and install other dependencies
 COPY requirements.txt .
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install gunicorn
+# Install remaining dependencies (skip dlib since already installed)
+RUN pip install --no-cache-dir $(grep -v "^dlib$" requirements.txt | tr '\n' ' ')
+RUN pip install --no-cache-dir gunicorn
 
 # Copy application code
 COPY . .
@@ -28,9 +31,5 @@ COPY . .
 # Expose port
 EXPOSE 5000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:5000/api/health || exit 1
-
 # Run the application
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "2", "--timeout", "120", "app:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "1", "--timeout", "120", "app:app"]

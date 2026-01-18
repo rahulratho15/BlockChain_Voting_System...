@@ -257,3 +257,6 @@
 2026-01-18 11:48:15,704 - werkzeug - INFO - 127.0.0.1 - - [18/Jan/2026 11:48:15] "[31m[1mPOST /api/encode_face HTTP/1.1[0m" 400 -
 2026-01-18 11:49:51,584 - werkzeug - INFO - 127.0.0.1 - - [18/Jan/2026 11:49:51] "POST /api/encode_face HTTP/1.1" 200 -
 2026-01-18 12:01:25,370 - werkzeug - INFO -  * Detected change in 'E:\\Blockchain-Voting-System-main\\Blockchain-Voting-System-main\\python backend\\app.py', reloading
+2026-01-18 12:01:25,535 - werkzeug - INFO -  * Restarting with stat
+2026-01-18 12:01:27,558 - werkzeug - WARNING -  * Debugger is active!
+2026-01-18 12:01:27,560 - werkzeug - INFO -  * Debugger PIN: 594-395-059
