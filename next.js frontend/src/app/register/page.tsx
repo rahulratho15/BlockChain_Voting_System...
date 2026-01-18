@@ -10,8 +10,6 @@ import { ConnectButton, useActiveAccount, useSendTransaction } from "thirdweb/re
 import { defineChain } from "thirdweb/chains";
 import axios from "axios";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-
 export default function VoterRegistration() {
     const [fullName, setFullName] = useState("");
     const [voterID, setVoterID] = useState("");
@@ -116,7 +114,7 @@ export default function VoterRegistration() {
             const formData = new FormData();
             formData.append("file", imageFile);
 
-            const response = await axios.post(`${API_URL}/api/encode_face`, formData, {
+            const response = await axios.post("http://localhost:5000/api/encode_face", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
@@ -142,7 +140,7 @@ export default function VoterRegistration() {
         try {
             setMessage("Initializing fingerprint scanner...");
 
-            const response = await axios.post(`${API_URL}/api/fingerprint/init`, {
+            const response = await axios.post("http://localhost:5000/api/fingerprint/init", {
                 port: "COM11"
             });
 
@@ -181,7 +179,7 @@ export default function VoterRegistration() {
 
             setMessage("Please place your finger on the scanner...");
 
-            const response = await axios.post(`${API_URL}/api/fingerprint/register`, {
+            const response = await axios.post("http://localhost:5000/api/fingerprint/register", {
                 voter_id: voterID,
                 voter_name: fullName
             });

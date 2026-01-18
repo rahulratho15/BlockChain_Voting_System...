@@ -16,8 +16,6 @@ import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables);
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-
 // Election states enum
 const ElectionState = {
     NOT_STARTED: 0,
@@ -510,7 +508,7 @@ const Admin = () => {
             await sendTransaction(transaction);
 
             try {
-                const response = await fetch(`${API_URL}/api/fingerprint/delete/${voterID}`, {
+                const response = await fetch(`http://localhost:5000/api/fingerprint/delete/${voterID}`, {
                     method: 'DELETE'
                 });
 

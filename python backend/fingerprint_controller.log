@@ -260,3 +260,18 @@
 2026-01-18 12:01:25,535 - werkzeug - INFO -  * Restarting with stat
 2026-01-18 12:01:27,558 - werkzeug - WARNING -  * Debugger is active!
 2026-01-18 12:01:27,560 - werkzeug - INFO -  * Debugger PIN: 594-395-059
+2026-01-18 13:47:31,408 - werkzeug - INFO -  * Detected change in 'E:\\Blockchain-Voting-System-main\\Blockchain-Voting-System-main\\python backend\\app.py', reloading
+2026-01-18 13:47:31,834 - werkzeug - INFO -  * Restarting with stat
+2026-01-18 13:47:36,859 - werkzeug - WARNING -  * Debugger is active!
+2026-01-18 13:47:36,863 - werkzeug - INFO -  * Debugger PIN: 594-395-059
+2026-01-18 13:48:17,724 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.7:5000
+2026-01-18 13:48:17,725 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-01-18 13:48:17,726 - werkzeug - INFO -  * Restarting with stat
+2026-01-18 13:48:19,761 - werkzeug - WARNING -  * Debugger is active!
+2026-01-18 13:48:19,763 - werkzeug - INFO -  * Debugger PIN: 594-395-059
+2026-01-18 13:51:30,438 - werkzeug - INFO - 127.0.0.1 - - [18/Jan/2026 13:51:30] "POST /api/encode_face HTTP/1.1" 200 -
+2026-01-18 13:51:30,444 - werkzeug - INFO - 127.0.0.1 - - [18/Jan/2026 13:51:30] "OPTIONS /api/face/compare HTTP/1.1" 200 -
+2026-01-18 13:51:30,752 - werkzeug - INFO - 127.0.0.1 - - [18/Jan/2026 13:51:30] "POST /api/face/compare HTTP/1.1" 200 -

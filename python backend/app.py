@@ -18,17 +18,6 @@ app = Flask(__name__)
 
 CORS(app)  # Enable CORS for all routes
 
-# Health check endpoint for deployment monitoring
-@app.route('/api/health', methods=['GET'])
-def health_check():
-    """Health check endpoint for deployment platforms"""
-    return jsonify({
-        "status": "healthy",
-        "service": "blockchain-voting-backend",
-        "face_recognition": True,
-        "fingerprint": fingerprint_controller is not None
-    })
-
 # Global fingerprint controller instance
 fingerprint_controller = None
 

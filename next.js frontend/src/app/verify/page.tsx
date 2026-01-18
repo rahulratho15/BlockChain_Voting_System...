@@ -11,8 +11,6 @@ import { ConnectButton, useActiveAccount, useSendTransaction } from "thirdweb/re
 import { defineChain } from "thirdweb/chains";
 import axios from "axios";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-
 export default function VoteCasting() {
     // State variables
     const [voterId, setVoterId] = useState("");
@@ -212,7 +210,7 @@ export default function VoteCasting() {
         const formData = new FormData();
         formData.append("file", imageFile);
 
-        const response = await axios.post(`${API_URL}/api/encode_face`, formData, {
+        const response = await axios.post("http://localhost:5000/api/encode_face", formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
             },
@@ -230,7 +228,7 @@ export default function VoteCasting() {
         try {
             setMessage("Verifying face...");
 
-            const response = await axios.post(`${API_URL}/api/face/compare`, {
+            const response = await axios.post("http://localhost:5000/api/face/compare", {
                 encoding1: JSON.parse(voterData.faceEncoding),
                 encoding2: await getFaceEncodingFromImage(imageFile),
                 threshold: 0.6
@@ -253,7 +251,7 @@ export default function VoteCasting() {
         try {
             setMessage("Initializing fingerprint scanner...");
 
-            const response = await axios.post(`${API_URL}/api/fingerprint/init`, {
+            const response = await axios.post("http://localhost:5000/api/fingerprint/init", {
                 port: "COM11" // Adjust port as needed
             });
 
@@ -284,7 +282,7 @@ export default function VoteCasting() {
             setMessage("Please place your finger on the scanner...");
 
             // Verify fingerprint
-            const response = await axios.post(`${API_URL}/api/fingerprint/verify`);
+            const response = await axios.post("http://localhost:5000/api/fingerprint/verify");
             console.log(response)
 
             if (response.data.success &&
